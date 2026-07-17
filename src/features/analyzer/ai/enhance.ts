@@ -40,7 +40,16 @@ export async function enhanceWithAI(
   try {
     const res = await fetch("/api/analyze", { method: "POST", body: form, signal: controller.signal });
     if (!res.ok) throw new Error(`AI enhance unavailable (${res.status})`);
-    return (await res.json()) as AiEnhancement;
+    const raw = (await res.json()) as Record<string, unknown>;
+    const toArray = (v: unknown): string[] =>
+      Array.isArray(v) ? v.map(String) : typeof v === "string" && v ? [v] : [];
+    return {
+      sceneDescription: String(raw.sceneDescription ?? ""),
+      subject: String(raw.subject ?? ""),
+      composition: toArray(raw.composition),
+      refinement: String(raw.refinement ?? ""),
+      pitfalls: toArray(raw.pitfalls),
+    };
   } finally {
     clearTimeout(timer);
   }

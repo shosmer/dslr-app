@@ -33,20 +33,20 @@ export async function POST(req: Request): Promise<Response> {
     imageB64 = buf.toString("base64");
     const rawContext = form.get("context");
     if (typeof rawContext === "string") context = JSON.parse(rawContext);
-  } catch {
-    return json({ error: "bad request" }, 400);
+  } catch (e) {
+    return json({ error: "bad request", detail: String(e) }, 400);
   }
 
   const prompt = `You are the AI layer of Ljósmynd, a field companion app for a Nikon D7100 (DX, ISO 100-6400, lenses: 35mm f/1.8G and 55-200mm f/4-5.6G).
 The photographer is shooting ${context.intent ?? "unknown intent"} with the ${context.lensName ?? "unknown lens"}.
 The on-device engine already recommends: ${context.localSummary ?? "n/a"}.
 
-Look at the photo of the scene and return STRICT JSON (no markdown) with keys:
-- sceneDescription: one sentence, what the light is actually doing
-- subject: the main subject you can identify
-- composition: 1-2 short suggestions
-- refinement: one sentence adjusting or confirming the local recommendation, with reasoning
-- pitfalls: 1-2 pitfalls specific to what's actually in frame
+Look at the photo of the scene and return STRICT JSON (no markdown) with exactly these keys and types:
+- sceneDescription (string): one sentence, what the light is actually doing
+- subject (string): the main subject you can identify
+- composition (array of 1-2 strings): short suggestions
+- refinement (string): one sentence adjusting or confirming the local recommendation, with reasoning
+- pitfalls (array of 1-2 strings): pitfalls specific to what's actually in frame
 
 Voice: direct, confident, zero fluff, second person. Never contradict eye-safety guidance.`;
 
