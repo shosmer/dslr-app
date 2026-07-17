@@ -1,0 +1,39 @@
+Interactive DSLR Photography Companion App Concept
+Project Overview
+The goal is to build a slick, modern Progressive Web App (PWA) that acts as an interactive companion for DSLR users, specifically tailored to the user's specific camera body and lens inventory. The app will feel like a native mobile app, utilizing the phone's hardware to analyze lighting conditions and recommend optimal camera settings, while also serving as an interactive, visual user manual.
+Hardware Profile
+The app will customize its tips, guides, and settings recommendations based on the user's specific gear:
+Camera Body
+	•	Nikon D7100 (referenced as 7D7100)
+Current Lenses
+	•	AF-S Nikkor 55-200mm f/4-5.6G ED (referenced as f/1.4-5.6G)
+	•	AF-S Nikkor 35mm f/1.8G
+	•	Upcoming Lens: A mid-range lens (focal length sitting between 35mm and 55mm) currently in transit.
+Key Features & Functionality
+1. Interactive 3D Camera Guide
+	•	Photorealistic 3D Render: A bold, modern, high-fidelity 3D render of the Nikon D7100 and attached lenses.
+	•	Interactive Hotspots: Users can tap on various buttons and dials on the 3D model to see what they do and how to use them.
+	•	"How-To" Settings Tab: Step-by-step instructions showing exactly how to change specific settings on the physical camera body (e.g., how to adjust ISO, white balance, or exposure compensation).
+2. Environment & Lighting Analyzer
+	•	Mobile Camera Integration: Use the smartphone's camera to snap a photo of the current environment or lighting challenge.
+	•	Smart Recommendations: The app analyzes the lighting conditions and suggests specific aperture, shutter speed, and ISO settings based on the currently attached lens.
+3. Smart Troubleshooting & Beginner Guides
+	•	Common Lighting Challenges: Interactive guides for tricky scenarios, such as:
+	•	High-contrast environments
+	•	Overcast/pure white skies
+	•	Split-lighting scenes (where one half of the frame is dark and the other is bright)
+	•	Interactive Manual Backing: Import and parse the official Nikon D7100 operating manual to act as the primary data source and "backing content" for troubleshooting queries.
+4. Educational Resources
+	•	Quick-reference notes on the "Exposure Triangle" (Aperture, Shutter Speed, ISO).
+	•	Guides on lens mechanics, lens covers, and popular attachments (filters, hoods, etc.).
+UI/UX Design Direction
+	•	Aesthetic: Slick, bold, and highly modern.
+	•	Feel: Highly responsive PWA that mimics the smooth transitions and tactile feel of a native iOS/Android mobile application.
+	•	Visual Assets: High-quality, photorealistic renders of the Nikon body and lens ecosystem.
+Action Items & Next Steps
+☐ Gather Assets: Locate and download the official Nikon D7100 user manual in PDF format.
+☐ Extract Manual Data: Parse the manual text to use as the knowledge base for the app's troubleshooting engine.
+☐ Source 3D Models: Find or create a photorealistic 3D model/render of the Nikon D7100 and the 35mm / 55-200mm lenses.
+☐ Define Tech Stack: Choose the framework for the PWA (e.g., React, Vue, or Svelte) and the 3D rendering library (e.g., Three.js / React Three Fiber).
+☐ Design UI Wireframes: Sketch out the main dashboard, the 3D camera viewer, and the lighting analyzer interface.
+☐ Develop Lighting Analyzer Prototype: Test mobile camera API integration to capture and analyze ambient light levels.

@@ -1,0 +1,67 @@
+/* Colors — dark-first. Warm near-black surfaces, corona-amber hero accent,
+   Iceland teal secondary. Tuned for bright-daylight legibility (WCAG AA on dark)
+   and OLED night use near totality. */
+:root {
+  /* Surfaces — warm near-black ramp (background → raised) */
+  --ink-1000: oklch(0.13 0.006 60);   /* app background, deepest */
+  --ink-950:  oklch(0.16 0.007 60);   /* base canvas */
+  --ink-900:  oklch(0.20 0.008 60);   /* sunken / inset */
+  --ink-850:  oklch(0.24 0.008 62);   /* surface */
+  --ink-800:  oklch(0.28 0.009 62);   /* card */
+  --ink-750:  oklch(0.33 0.009 64);   /* raised card / hover */
+  --ink-700:  oklch(0.40 0.009 64);   /* border strong */
+  --ink-650:  oklch(0.33 0.008 64);   /* border default */
+
+  /* Text — warm off-whites (never pure #fff) */
+  --paper:       oklch(0.96 0.006 80);  /* primary text */
+  --paper-dim:   oklch(0.80 0.006 80);  /* secondary text */
+  --paper-faint: oklch(0.62 0.006 80);  /* tertiary / captions */
+  --paper-mute:  oklch(0.48 0.006 70);  /* disabled / placeholder */
+
+  /* Accent — corona amber (hero) */
+  --amber-600: oklch(0.72 0.15 72);
+  --amber-500: oklch(0.80 0.145 75);   /* primary accent */
+  --amber-400: oklch(0.86 0.13 78);
+  --amber-tint: oklch(0.80 0.145 75 / 0.14); /* amber wash bg */
+
+  /* Accent — Iceland teal (secondary) */
+  --teal-600: oklch(0.70 0.10 195);
+  --teal-500: oklch(0.80 0.095 192);
+  --teal-400: oklch(0.87 0.085 190);
+  --teal-tint: oklch(0.80 0.095 192 / 0.14);
+
+  /* Semantic — field/safety states */
+  --safe:    oklch(0.80 0.13 152);      /* "safe to look" / success / FILTER OFF ok */
+  --safe-tint: oklch(0.80 0.13 152 / 0.15);
+  --warn:    oklch(0.82 0.15 82);       /* caution */
+  --warn-tint: oklch(0.82 0.15 82 / 0.15);
+  --danger:  oklch(0.66 0.20 25);       /* eye-safety / FILTER ON now / errors */
+  --danger-tint: oklch(0.66 0.20 25 / 0.16);
+  --info:    var(--teal-500);
+
+  /* Semantic aliases — consume these in product code */
+  --bg-app:        var(--ink-1000);
+  --bg-canvas:     var(--ink-950);
+  --surface-sunken: var(--ink-900);
+  --surface:       var(--ink-850);
+  --surface-card:  var(--ink-800);
+  --surface-raised: var(--ink-750);
+
+  --text-primary:   var(--paper);
+  --text-secondary: var(--paper-dim);
+  --text-tertiary:  var(--paper-faint);
+  --text-disabled:  var(--paper-mute);
+  --text-on-accent: oklch(0.18 0.02 60);  /* dark ink on amber/teal fills */
+
+  --border:        var(--ink-650);
+  --border-strong: var(--ink-700);
+
+  --accent:         var(--amber-500);
+  --accent-hover:   var(--amber-400);
+  --accent-press:   var(--amber-600);
+  --accent-wash:    var(--amber-tint);
+  --accent-2:       var(--teal-500);
+  --accent-2-wash:  var(--teal-tint);
+
+  --focus-ring: var(--amber-400);
+}

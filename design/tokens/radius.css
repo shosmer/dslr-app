@@ -1,0 +1,9 @@
+/* Corner radii — soft, modern, premium-camera-companion feel. */
+:root {
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;   /* default card / control */
+  --radius-lg: 20px;   /* large cards, bottom sheets */
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+}

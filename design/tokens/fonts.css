@@ -1,0 +1,5 @@
+/* Fonts — Space Grotesk (display) + Inter (UI), IBM Plex Mono (settings/data).
+   NOTE: Loaded from Google Fonts CDN for the design system. The production PWA
+   self-hosts these (§12 "Self-hosted (offline)"). Swap these @imports for local
+   @font-face + woff2 binaries before shipping the offline app. */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");

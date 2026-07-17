@@ -1,0 +1,35 @@
+/* Typography — Space Grotesk display, Inter UI, IBM Plex Mono for camera data.
+   Field ergonomics (§12): large type, high contrast, nothing critical below 15px. */
+:root {
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-ui:      "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Type scale (px) */
+  --text-display-xl: 56px; /* countdown clocks, hero numbers */
+  --text-display:    40px; /* screen titles */
+  --text-h1:         30px;
+  --text-h2:         24px;
+  --text-h3:         20px;
+  --text-body-lg:    18px;
+  --text-body:       16px;
+  --text-sm:         14px;
+  --text-xs:         13px; /* smallest allowed for field legibility */
+
+  /* Weights */
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold: 600;
+  --weight-bold:    700;
+
+  /* Line heights */
+  --leading-tight:  1.1;
+  --leading-snug:   1.25;
+  --leading-normal: 1.5;
+
+  /* Tracking */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:  0.04em;   /* eyebrows / labels */
+  --tracking-caps:  0.08em;   /* all-caps mono labels */
+}

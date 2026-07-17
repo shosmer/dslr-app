@@ -1,0 +1,26 @@
+/* Effects — shadows, motion, blur. Shadows are deep and soft on dark UI;
+   accents carry a subtle glow (corona motif). Motion is quick & eased (§12). */
+:root {
+  /* Elevation shadows (dark UI: deep + diffuse) */
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.4);
+  --shadow-md: 0 6px 20px oklch(0 0 0 / 0.45);
+  --shadow-lg: 0 16px 40px oklch(0 0 0 / 0.55);
+  --shadow-sheet: 0 -12px 40px oklch(0 0 0 / 0.55);
+
+  /* Accent glow — the "corona" halo on primary CTAs / active states */
+  --glow-amber: 0 0 0 1px oklch(0.80 0.145 75 / 0.4), 0 4px 20px oklch(0.80 0.145 75 / 0.28);
+  --glow-teal:  0 0 0 1px oklch(0.80 0.095 192 / 0.4), 0 4px 20px oklch(0.80 0.095 192 / 0.28);
+
+  /* Focus ring */
+  --ring: 0 0 0 3px oklch(0.86 0.13 78 / 0.55);
+
+  /* Blur (bottom-sheet scrims, status bars) */
+  --blur-scrim: blur(12px);
+
+  /* Motion (§12: 120–200ms eased) */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 160ms;
+  --dur-slow: 200ms;
+}

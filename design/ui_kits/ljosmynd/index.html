@@ -1,0 +1,319 @@
+<!-- @dsCard group="Ljósmynd App" viewport="440x880" name="Ljósmynd — interactive PWA" subtitle="D7100 field companion · tap the bottom tabs" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  html,body{margin:0;background:var(--bg-app);font-family:var(--font-ui);min-height:100%}
+  a{color:var(--accent)}a:hover{color:var(--accent-hover)}
+  #stage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+  .phone{width:400px;height:830px;background:var(--bg-canvas);border-radius:36px;border:1px solid var(--border);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .statusbar{height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:var(--font-mono);font-size:12px;color:var(--paper);font-weight:600}
+  .statusbar .r{display:flex;gap:6px;align-items:center}
+  .scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+  .scroll::-webkit-scrollbar{width:0}
+  .tabwrap{flex:0 0 auto}
+  .stripe{background:repeating-linear-gradient(135deg,var(--ink-850),var(--ink-850) 10px,var(--ink-900) 10px,var(--ink-900) 20px);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:flex-end;color:var(--text-tertiary);font-family:var(--font-mono);font-size:11px}
+</style>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.22.20/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script type="text/babel">
+/* Self-contained render copies of the Ljósmynd components for the @dsCard demos
+   and UI kit, exposed on window.LJ. The canonical source lives in
+   components/<group>/<Name>.jsx (+ .d.ts). This file exists only so the cards
+   render without the design-system compiler's _ds_bundle.js. Keep in sync. */
+const { useState } = React;
+
+function Button({ children, variant = "primary", size = "md", fullWidth = false, disabled = false, iconLeft = null, iconRight = null, onClick, type = "button", ...rest }) {
+  const sizes = {
+    sm: { height: 40, padding: "0 16px", font: "var(--text-sm)", radius: "var(--radius-sm)" },
+    md: { height: 48, padding: "0 22px", font: "var(--text-body)", radius: "var(--radius-md)" },
+    lg: { height: "var(--touch-lg)", padding: "0 28px", font: "var(--text-body-lg)", radius: "var(--radius-md)" },
+  }[size];
+  const variants = {
+    primary: { background: "var(--accent)", color: "var(--text-on-accent)", border: "1px solid transparent", boxShadow: "var(--glow-amber)" },
+    secondary: { background: "var(--surface-raised)", color: "var(--text-primary)", border: "1px solid var(--border-strong)" },
+    ghost: { background: "transparent", color: "var(--text-secondary)", border: "1px solid transparent" },
+    danger: { background: "var(--danger)", color: "var(--paper)", border: "1px solid transparent" },
+  }[variant];
+  return (
+    <button type={type} onClick={onClick} disabled={disabled}
+      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "var(--space-2)", height: sizes.height, minWidth: "var(--touch-min)", padding: sizes.padding, width: fullWidth ? "100%" : "auto", fontFamily: "var(--font-ui)", fontSize: sizes.font, fontWeight: "var(--weight-semibold)", letterSpacing: "-0.01em", borderRadius: sizes.radius, cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.4 : 1, transition: "transform var(--dur-fast) var(--ease-out)", WebkitTapHighlightColor: "transparent", ...variants }}
+      onMouseDown={(e) => { if (!disabled) e.currentTarget.style.transform = "scale(0.97)"; }}
+      onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }} {...rest}>
+      {iconLeft}{children}{iconRight}
+    </button>
+  );
+}
+
+function IconButton({ icon, label, variant = "ghost", size = 44, onClick, ...rest }) {
+  const variants = {
+    ghost: { background: "var(--surface)", color: "var(--text-secondary)", border: "1px solid var(--border)" },
+    solid: { background: "var(--surface-raised)", color: "var(--text-primary)", border: "1px solid var(--border-strong)" },
+    accent: { background: "var(--accent)", color: "var(--text-on-accent)", border: "1px solid transparent", boxShadow: "var(--glow-amber)" },
+  }[variant];
+  return (
+    <button type="button" aria-label={label} title={label} onClick={onClick}
+      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: size, height: size, borderRadius: "var(--radius-pill)", cursor: "pointer", transition: "transform var(--dur-fast) var(--ease-out)", WebkitTapHighlightColor: "transparent", ...variants }}
+      onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.92)")}
+      onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")} {...rest}>{icon}</button>
+  );
+}
+
+function Badge({ children, tone = "neutral", icon = null, size = "md" }) {
+  const tones = {
+    neutral: { bg: "var(--surface-raised)", fg: "var(--text-secondary)", bd: "var(--border)" },
+    amber: { bg: "var(--accent-wash)", fg: "var(--amber-400)", bd: "transparent" },
+    teal: { bg: "var(--accent-2-wash)", fg: "var(--teal-400)", bd: "transparent" },
+    safe: { bg: "var(--safe-tint)", fg: "var(--safe)", bd: "transparent" },
+    warn: { bg: "var(--warn-tint)", fg: "var(--warn)", bd: "transparent" },
+    danger: { bg: "var(--danger-tint)", fg: "var(--danger)", bd: "transparent" },
+  }[tone];
+  const dims = size === "sm" ? { pad: "3px 8px", font: "11px" } : { pad: "5px 12px", font: "var(--text-xs)" };
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: dims.pad, fontFamily: "var(--font-mono)", fontSize: dims.font, fontWeight: "var(--weight-medium)", letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", borderRadius: "var(--radius-pill)", background: tones.bg, color: tones.fg, border: `1px solid ${tones.bd}`, whiteSpace: "nowrap" }}>
+      {icon}{children}
+    </span>
+  );
+}
+
+function Card({ children, tone = "default", glow = false, interactive = false, padding = "var(--space-5)", onClick, ...rest }) {
+  const tones = {
+    default: { background: "var(--surface-card)", border: "1px solid var(--border)" },
+    sunken: { background: "var(--surface-sunken)", border: "1px solid var(--border)" },
+    amber: { background: "var(--accent-wash)", border: "1px solid oklch(0.80 0.145 75 / 0.35)" },
+    teal: { background: "var(--accent-2-wash)", border: "1px solid oklch(0.80 0.095 192 / 0.35)" },
+  }[tone];
+  return (
+    <div onClick={onClick}
+      style={{ borderRadius: "var(--radius-lg)", padding, boxShadow: glow ? "var(--glow-amber)" : "var(--shadow-md)", cursor: interactive ? "pointer" : "default", transition: "transform var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out)", ...tones }}
+      onMouseEnter={interactive ? (e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "var(--border-strong)"; } : undefined}
+      onMouseLeave={interactive ? (e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = ""; } : undefined} {...rest}>{children}</div>
+  );
+}
+
+function RecipeTable({ title = null, rows = [], accent = "amber" }) {
+  const accentColor = accent === "teal" ? "var(--teal-500)" : "var(--amber-500)";
+  return (
+    <div style={{ background: "var(--surface-sunken)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
+      {title && <div style={{ padding: "10px 16px", fontFamily: "var(--font-mono)", fontSize: "11px", letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", color: "var(--text-tertiary)", borderBottom: "1px solid var(--border)" }}>{title}</div>}
+      {rows.map((r, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", padding: "12px 16px", borderTop: i === 0 ? "none" : "1px solid var(--border)" }}>
+          <span style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>{r.label}</span>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--text-body)", fontWeight: "var(--weight-semibold)", color: r.highlight ? accentColor : "var(--text-primary)", letterSpacing: "0.01em", whiteSpace: "nowrap" }}>{r.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TabBar({ items = [], activeId, onChange }) {
+  return (
+    <nav style={{ display: "flex", height: "var(--tabbar-h)", background: "oklch(0.16 0.007 60 / 0.85)", backdropFilter: "var(--blur-scrim)", WebkitBackdropFilter: "var(--blur-scrim)", borderTop: "1px solid var(--border)" }}>
+      {items.map((it) => {
+        const active = it.id === activeId;
+        return (
+          <button key={it.id} type="button" onClick={() => onChange && onChange(it.id)}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "4px", position: "relative", background: "transparent", border: "none", cursor: "pointer", color: active ? "var(--accent)" : "var(--text-tertiary)", transition: "color var(--dur-base) var(--ease-out)", WebkitTapHighlightColor: "transparent" }}>
+            <span style={{ display: "flex", width: 24, height: 24 }}>{it.icon}</span>
+            <span style={{ fontFamily: "var(--font-ui)", fontSize: "11px", fontWeight: active ? "var(--weight-semibold)" : "var(--weight-medium)", letterSpacing: "0.01em" }}>{it.label}</span>
+            {it.badge && <span style={{ position: "absolute", top: 8, right: "calc(50% - 22px)", minWidth: 16, height: 16, padding: "0 4px", borderRadius: "var(--radius-pill)", background: "var(--accent)", color: "var(--text-on-accent)", fontSize: "10px", fontWeight: 700, fontFamily: "var(--font-mono)", display: "flex", alignItems: "center", justifyContent: "center" }}>{it.badge}</span>}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+function SegmentedControl({ options = [], value, onChange, fullWidth = true }) {
+  return (
+    <div style={{ display: "inline-flex", width: fullWidth ? "100%" : "auto", padding: "4px", background: "var(--surface-sunken)", border: "1px solid var(--border)", borderRadius: "var(--radius-pill)", gap: "2px" }}>
+      {options.map((opt) => {
+        const val = typeof opt === "string" ? opt : opt.value;
+        const label = typeof opt === "string" ? opt : opt.label;
+        const active = val === value;
+        return (
+          <button key={val} type="button" onClick={() => onChange && onChange(val)}
+            style={{ flex: fullWidth ? 1 : "0 0 auto", height: 40, padding: "0 16px", border: "none", borderRadius: "var(--radius-pill)", cursor: "pointer", fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)", fontWeight: active ? "var(--weight-semibold)" : "var(--weight-medium)", background: active ? "var(--accent-wash)" : "transparent", color: active ? "var(--amber-400)" : "var(--text-tertiary)", boxShadow: active ? "inset 0 0 0 1px oklch(0.80 0.145 75 / 0.4)" : "none", transition: "all var(--dur-base) var(--ease-out)", WebkitTapHighlightColor: "transparent", whiteSpace: "nowrap" }}>{label}</button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Countdown({ value, label = null, tone = "amber", size = "lg" }) {
+  const color = { amber: "var(--amber-500)", teal: "var(--teal-500)", danger: "var(--danger)", paper: "var(--paper)" }[tone];
+  const fontSize = size === "lg" ? "var(--text-display-xl)" : size === "md" ? "var(--text-display)" : "var(--text-h1)";
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+      {label && <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", color: "var(--text-tertiary)" }}>{label}</span>}
+      <span style={{ fontFamily: "var(--font-mono)", fontSize, fontWeight: "var(--weight-semibold)", fontVariantNumeric: "tabular-nums", letterSpacing: "0.01em", lineHeight: "var(--leading-tight)", color }}>{value}</span>
+    </div>
+  );
+}
+
+function SafetyBanner({ state = "warn", title, detail = null, icon = null }) {
+  const tones = {
+    danger: { bg: "var(--danger)", fg: "var(--paper)", sub: "oklch(0.96 0.006 80 / 0.8)" },
+    safe: { bg: "var(--safe)", fg: "var(--text-on-accent)", sub: "oklch(0.18 0.02 60 / 0.7)" },
+    warn: { bg: "var(--warn)", fg: "var(--text-on-accent)", sub: "oklch(0.18 0.02 60 / 0.7)" },
+  }[state];
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-4) var(--space-5)", background: tones.bg, borderRadius: "var(--radius-md)" }}>
+      {icon && <span style={{ display: "flex", flex: "0 0 auto", color: tones.fg }}>{icon}</span>}
+      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+        <span style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-h3)", fontWeight: "var(--weight-bold)", letterSpacing: "0.02em", textTransform: "uppercase", color: tones.fg, lineHeight: 1.1 }}>{title}</span>
+        {detail && <span style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)", color: tones.sub }}>{detail}</span>}
+      </div>
+    </div>
+  );
+}
+
+function ChecklistItem({ label, detail = null, checked = false, urgent = false, onToggle }) {
+  return (
+    <button type="button" onClick={onToggle}
+      style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", width: "100%", minHeight: "var(--touch-min)", padding: "var(--space-3) var(--space-4)", background: "transparent", border: "none", cursor: "pointer", textAlign: "left", borderRadius: "var(--radius-sm)", WebkitTapHighlightColor: "transparent" }}>
+      <span style={{ flex: "0 0 auto", width: 26, height: 26, borderRadius: "var(--radius-sm)", display: "flex", alignItems: "center", justifyContent: "center", background: checked ? "var(--accent)" : "transparent", border: checked ? "1px solid transparent" : "1.5px solid var(--border-strong)", color: "var(--text-on-accent)", transition: "all var(--dur-fast) var(--ease-out)" }}>
+        {checked && <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
+      </span>
+      <span style={{ display: "flex", flexDirection: "column", gap: "1px", minWidth: 0 }}>
+        <span style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-body)", fontWeight: "var(--weight-medium)", color: checked ? "var(--text-tertiary)" : "var(--text-primary)", textDecoration: checked ? "line-through" : "none" }}>{label}</span>
+        {detail && <span style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: urgent ? "var(--warn)" : "var(--text-tertiary)" }}>{detail}</span>}
+      </span>
+    </button>
+  );
+}
+
+window.LJ = { Button, IconButton, Badge, Card, RecipeTable, TabBar, SegmentedControl, Countdown, SafetyBanner, ChecklistItem };
+
+</script>
+</head>
+<body><div id="stage"><div id="root"></div></div>
+<script type="text/babel">
+const {useState,useEffect}=React;
+let Button,Card,Badge,RecipeTable,SegmentedControl,TabBar,Countdown,SafetyBanner,ChecklistItem;
+const I=(n,s=24)=>React.createElement('i',{'data-lucide':n,style:{width:s,height:s,display:'flex'}});
+const mono={fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:'var(--text-tertiary)'};
+const disp=(sz)=>({fontFamily:'var(--font-display)',fontSize:sz,fontWeight:700,letterSpacing:'-0.02em',color:'var(--paper)'});
+const scr={display:'flex',flexDirection:'column',gap:'var(--space-4)',padding:'var(--space-5)',paddingBottom:88};
+
+function Home({go}){return(<div style={scr}>
+  <header style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+    <div><div style={disp(26)}>Ljósmynd</div><div style={mono}>Nikon D7100 · Iceland ’26</div></div>
+    <div style={{width:44,height:44,borderRadius:'var(--radius-pill)',background:'var(--surface)',border:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text-secondary)'}}>{I('settings')}</div>
+  </header>
+  <Card tone="amber" glow>
+    <div style={{marginBottom:10}}><Badge tone="amber" icon={I('eclipse',13)}>Total solar eclipse</Badge></div>
+    <Countdown label="Totality · Snæfellsnes · Aug 12, 17:45:46" value="26d 04:11:52" tone="amber" size="md"/>
+    <div style={{marginTop:16}}><Button variant="primary" fullWidth iconLeft={I('eclipse',18)} onClick={()=>go('eclipse')}>Open Eclipse Mode</Button></div>
+  </Card>
+  <Card>
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}><span style={mono}>Today in Iceland · Day 3</span><Badge tone="teal">Reynisfjara</Badge></div>
+    <div style={{...disp(20),fontWeight:600,marginBottom:4}}>Black-sand beaches</div>
+    <p style={{margin:'0 0 14px',fontSize:14,lineHeight:1.5,color:'var(--text-secondary)'}}>The dark sand fools matrix metering bright. Dial negative exposure comp.</p>
+    <div style={{display:'flex',gap:8,flexWrap:'wrap'}}><Badge>Black sand</Badge><Badge>Waterfalls</Badge><Badge>Golden hour</Badge></div>
+  </Card>
+  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+    <Card interactive onClick={()=>go('analyze')} padding="var(--space-4)"><div style={{color:'var(--amber-500)',marginBottom:10}}>{I('scan-line',26)}</div><div style={{fontWeight:600,color:'var(--paper)',fontSize:16}}>Analyze light</div><div style={{fontSize:13,color:'var(--text-tertiary)'}}>Snap → settings</div></Card>
+    <Card interactive onClick={()=>go('camera')} padding="var(--space-4)"><div style={{color:'var(--teal-500)',marginBottom:10}}>{I('rotate-3d',26)}</div><div style={{fontWeight:600,color:'var(--paper)',fontSize:16}}>Resume How-To</div><div style={{fontSize:13,color:'var(--text-tertiary)'}}>Save U1/U2</div></Card>
+  </div>
+  <Card tone="sunken" padding="var(--space-4)">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}><span style={mono}>Eclipse prep · 1 of 8</span><span style={{color:'var(--text-tertiary)'}}>{I('chevron-right',18)}</span></div>
+    <ChecklistItem label="52mm solar filter" detail="Buy before departure" urgent checked={false}/>
+    <ChecklistItem label="ISO 12312-2 eclipse glasses" checked={true}/>
+  </Card>
+  <Button variant="secondary" fullWidth iconLeft={I('download',18)}>Trip mode — download everything</Button>
+</div>);}
+
+function Analyze({intent,setIntent,go}){return(<div style={scr}>
+  <header style={{display:'flex',alignItems:'baseline',justifyContent:'space-between'}}><div style={disp(24)}>Analyze</div><Badge tone="safe" icon={I('wifi-off',13)}>Offline · 1.4s</Badge></header>
+  <div className="stripe" style={{height:150,padding:12,position:'relative'}}>
+    <span style={{background:'oklch(0.13 0.006 60 / 0.7)',padding:'4px 8px',borderRadius:'var(--radius-xs)'}}>[ captured scene — EV 14.2 · overcast ]</span>
+    <div style={{position:'absolute',top:12,right:12}}><Badge>35mm f/1.8</Badge></div>
+  </div>
+  <SegmentedControl value={intent} onChange={setIntent} options={["Landscape","Portrait","Action","Low light"]}/>
+  <Card tone="amber" glow>
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}><span style={{...mono,color:'var(--amber-400)'}}>Recommended · #1</span><Badge tone="amber">Overcast / white sky</Badge></div>
+    <RecipeTable rows={[{label:'Mode',value:'A — Aperture priority'},{label:'Aperture',value:'f/8',highlight:true},{label:'Shutter',value:'1/250s (auto)'},{label:'ISO',value:'200'},{label:'Exp. comp',value:'−0.7 EV',highlight:true},{label:'White balance',value:'Cloudy'}]}/>
+    <p style={{margin:'12px 0 0',fontSize:14,lineHeight:1.5,color:'var(--text-secondary)'}}><strong style={{color:'var(--paper)'}}>Why:</strong> flat bright sky reads mid-gray to the meter — it’ll blow out. Bias down 0.7 EV.</p>
+    <div style={{display:'flex',alignItems:'center',gap:8,marginTop:12,padding:'10px 12px',background:'var(--warn-tint)',borderRadius:'var(--radius-sm)'}}><span style={{color:'var(--warn)'}}>{I('triangle-alert',18)}</span><span style={{fontSize:13,color:'var(--paper-dim)'}}>Sky will clip — meter for highlights, recover in RAW.</span></div>
+    <div style={{marginTop:14}}><Button variant="secondary" size="sm" iconRight={I('arrow-right',16)} onClick={()=>go('camera')}>How to set exp. comp</Button></div>
+  </Card>
+  <Card padding="var(--space-4)"><span style={mono}>Alternate · #2 — freeze detail</span><div style={{display:'flex',gap:10,marginTop:10,fontFamily:'var(--font-mono)',fontSize:15,color:'var(--paper)'}}><span>f/5.6</span><span style={{color:'var(--border-strong)'}}>·</span><span>1/500s</span><span style={{color:'var(--border-strong)'}}>·</span><span>ISO 400</span></div></Card>
+  <Button variant="primary" size="lg" fullWidth iconLeft={I('sparkles',20)}>Enhance with AI</Button>
+  <p style={{margin:'-6px 0 0',textAlign:'center',fontSize:12,color:'var(--text-tertiary)'}}>Sends a downscaled copy · works without it</p>
+</div>);}
+
+const PHASES=[{l:'C1 · First contact',t:'16:43',done:1},{l:'Filter checkpoint',t:'17:44',done:1},{l:'C2 · Totality begins',t:'17:45:46',active:1},{l:'Maximum',t:'17:46:49'},{l:'C3 · Totality ends',t:'17:47:53'},{l:'C4 · Last contact',t:'18:48'}];
+function Eclipse({spot,setSpot}){return(<div style={scr}>
+  <header style={{display:'flex',alignItems:'baseline',justifyContent:'space-between'}}><div style={disp(24)}>Eclipse Mode</div><Badge tone="safe" icon={I('lock',13)}>Wake-lock on</Badge></header>
+  <SegmentedControl value={spot} onChange={setSpot} options={[{value:'Hellissandur',label:'Hellissandur'},{value:'Kirkjufell',label:'Kirkjufell'},{value:'Ólafsvík',label:'Ólafsvík'}]}/>
+  <SafetyBanner state="danger" title="Filter on now" detail="Partial phase — never look unfiltered." icon={I('shield-alert',26)}/>
+  <Card tone="amber" glow>
+    <Countdown label="Totality begins in" value="01:47" tone="danger" size="lg"/>
+    <div style={{display:'flex',gap:16,marginTop:10,fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-secondary)'}}><span>Duration <strong style={{color:'var(--paper)'}}>2m 07s</strong></span><span>Sun alt <strong style={{color:'var(--paper)'}}>~24°</strong></span></div>
+  </Card>
+  <Card padding="var(--space-4)"><span style={mono}>Timeline · {spot}</span>
+    <div style={{display:'flex',flexDirection:'column',marginTop:10}}>{PHASES.map((p,i)=>(
+      <div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'9px 0',borderTop:i===0?'none':'1px solid var(--border)'}}>
+        <span style={{width:10,height:10,borderRadius:'var(--radius-pill)',background:p.active?'var(--amber-500)':p.done?'var(--safe)':'var(--border-strong)',boxShadow:p.active?'var(--glow-amber)':'none'}}/>
+        <span style={{flex:1,fontSize:14,fontWeight:p.active?700:500,color:p.active?'var(--amber-400)':p.done?'var(--text-tertiary)':'var(--paper)'}}>{p.l}</span>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-secondary)'}}>{p.t}</span>
+      </div>))}</div>
+  </Card>
+  <div>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}><span style={{...disp(18),fontWeight:600}}>Totality base · U2</span><Badge tone="teal" icon={I('camera',13)}>55-200 @ 200mm</Badge></div>
+    <RecipeTable accent="teal" rows={[{label:'Filter',value:'OFF',highlight:true},{label:'Aperture',value:'f/5.6–8'},{label:'Shutter',value:'1/1000s → 1s (bracket)',highlight:true},{label:'ISO',value:'200–400'},{label:'Focus',value:'Manual · sun’s edge'}]}/>
+    <p style={{margin:'12px 0 0',fontSize:14,lineHeight:1.5,color:'var(--text-secondary)'}}>Bracket the corona, then <strong style={{color:'var(--paper)'}}>stop and look up for 20 seconds.</strong></p>
+  </div>
+  <Button variant="primary" size="lg" fullWidth iconLeft={I('play',20)}>Run practice mode (5 min)</Button>
+</div>);}
+
+const STEPS=[{n:1,text:'Set the mode dial to A',c:'mode dial'},{n:2,text:'Spin the front dial to f/9',c:'front dial'},{n:3,text:'Hold ±, spin rear dial to −1.0',c:'exp-comp'},{n:4,text:'Half-press to meter — watch top LCD',c:'shutter'}];
+function Guide(){return(<div style={scr}>
+  <header style={{display:'flex',alignItems:'center',gap:12}}><div style={{width:44,height:44,borderRadius:'var(--radius-pill)',background:'var(--surface)',border:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text-secondary)'}}>{I('arrow-left')}</div><div style={{display:'flex',gap:8}}><Badge tone="teal">Iceland pack</Badge><Badge>Reynisfjara</Badge></div></header>
+  <div><div style={{...disp(30),lineHeight:1.1}}>Black-sand beaches</div><p style={{margin:'10px 0 0',fontSize:16,lineHeight:1.5,color:'var(--text-secondary)'}}>The dark sand fools the meter — shots come back muddy grey. Here’s the fix.</p></div>
+  <div><span style={mono}>Why it happens</span><p style={{margin:'6px 0 0',fontSize:15,lineHeight:1.55,color:'var(--paper-dim)'}}>Matrix metering assumes mid-gray. Black sand pushes it to overexpose — brightening sand to grey and blowing the surf.</p></div>
+  <div><div style={{...disp(18),fontWeight:600,marginBottom:8}}>The D7100 recipe</div><RecipeTable rows={[{label:'Mode',value:'A — Aperture priority'},{label:'Aperture',value:'f/9'},{label:'ISO',value:'100'},{label:'Exp. comp',value:'−1.0 EV',highlight:true},{label:'Metering',value:'Matrix'}]}/></div>
+  <div><div style={{...disp(18),fontWeight:600,marginBottom:10}}>Set it up</div><div style={{display:'flex',flexDirection:'column',gap:8}}>{STEPS.map(s=>(
+    <div key={s.n} style={{display:'flex',gap:12,alignItems:'center',padding:'12px 14px',background:'var(--surface-card)',border:'1px solid var(--border)',borderRadius:'var(--radius-md)'}}>
+      <span style={{width:26,height:26,borderRadius:'var(--radius-pill)',background:'var(--accent-wash)',color:'var(--amber-400)',fontFamily:'var(--font-mono)',fontSize:13,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center'}}>{s.n}</span>
+      <span style={{flex:1,fontSize:14,color:'var(--paper)'}}>{s.text}</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--teal-400)'}}>{s.c}</span>
+    </div>))}</div></div>
+  <div style={{display:'flex',alignItems:'flex-start',gap:10,padding:14,background:'var(--warn-tint)',borderRadius:'var(--radius-md)'}}><span style={{color:'var(--warn)'}}>{I('triangle-alert',20)}</span><div><div style={{fontWeight:600,color:'var(--paper)',fontSize:14,marginBottom:2}}>Watch out for</div><span style={{fontSize:13,color:'var(--paper-dim)',lineHeight:1.5}}>Sneaker waves at Reynisfjara are deadly — never turn your back on the ocean.</span></div></div>
+  <Button variant="secondary" fullWidth iconLeft={I('bookmark',18)}>Save as preset</Button>
+</div>);}
+
+function CameraScreen(){return(<div style={scr}>
+  <div style={disp(24)}>Camera</div>
+  <div className="stripe" style={{height:280,alignItems:'center',justifyContent:'center'}}>[ interactive 3D D7100 — orbit / pinch ]</div>
+  <span style={mono}>How-To library · 15 recipes</span>
+  {['Change ISO','Set exposure comp','Save U1/U2 banks','Switch AF mode'].map((t,i)=>(
+    <div key={i} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 16px',background:'var(--surface-card)',border:'1px solid var(--border)',borderRadius:'var(--radius-md)'}}><span style={{color:'var(--paper)',fontSize:15,fontWeight:500}}>{t}</span><span style={{color:'var(--text-tertiary)'}}>{I('chevron-right',18)}</span></div>
+  ))}
+</div>);}
+
+function App(){
+  const [tab,setTab]=useState('home');
+  const [intent,setIntent]=useState('Landscape');
+  const [spot,setSpot]=useState('Hellissandur');
+  useEffect(()=>{if(window.lucide)window.lucide.createIcons();});
+  let s;
+  if(tab==='home')s=<Home go={setTab}/>;
+  else if(tab==='camera')s=<CameraScreen/>;
+  else if(tab==='analyze')s=<Analyze intent={intent} setIntent={setIntent} go={setTab}/>;
+  else if(tab==='guides')s=<Guide/>;
+  else s=<Eclipse spot={spot} setSpot={setSpot}/>;
+  return(<div className="phone">
+    <div className="statusbar"><span>17:44</span><span className="r">{I('signal',15)}{I('wifi-off',15)}{I('battery-medium',18)}</span></div>
+    <div className="scroll" key={tab}>{s}</div>
+    <div className="tabwrap"><TabBar activeId={tab} onChange={setTab} items={[
+      {id:'home',label:'Home',icon:I('house')},{id:'camera',label:'Camera',icon:I('camera')},{id:'analyze',label:'Analyze',icon:I('scan-line')},{id:'guides',label:'Guides',icon:I('book-open')},{id:'eclipse',label:'Eclipse',icon:I('eclipse'),badge:'26'}]}/></div>
+  </div>);
+}
+function boot(){if(!window.LJ){return setTimeout(boot,40);}({Button,Card,Badge,RecipeTable,SegmentedControl,TabBar,Countdown,SafetyBanner,ChecklistItem}=window.LJ);ReactDOM.createRoot(document.getElementById('root')).render(<App/>);setTimeout(()=>window.lucide&&window.lucide.createIcons(),80);}
+boot();
+</script></body></html>
