@@ -19,8 +19,11 @@ export interface FrameStats {
   brightMass: number;
   /** 0–1: two well-separated histogram lobes → split lighting */
   bimodality: number;
-  /** EV difference between brighter and darker image half (max of h/v split) */
+  /** EV difference between LEFT and RIGHT halves only — a vertical sky/ground
+   *  difference is normal landscape structure, not split lighting */
   splitEV: number;
+  /** EV difference between top and bottom halves (sky vs. ground) */
+  skyGroundEV: number;
   /** EV of frame edges minus center (positive = bright edges, dark subject = backlit) */
   backlitEV: number;
   /** gray-world channel means (gamma space) */
@@ -132,7 +135,8 @@ export function frameStats(data: Uint8ClampedArray, width: number, height: numbe
     clipLow: clipLow / n,
     brightMass: brightMass / n,
     bimodality: bimodalityOf(hist),
-    splitEV: Math.max(hSplit, vSplit),
+    splitEV: hSplit,
+    skyGroundEV: vSplit,
     backlitEV,
     avgR: sumR / n,
     avgG: sumG / n,

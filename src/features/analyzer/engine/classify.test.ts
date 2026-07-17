@@ -13,6 +13,7 @@ function stats(partial: Partial<FrameStats>): FrameStats {
     brightMass: 0.05,
     bimodality: 0,
     splitEV: 0,
+    skyGroundEV: 0,
     backlitEV: 0,
     avgR: 0.45,
     avgG: 0.45,
@@ -36,6 +37,12 @@ describe("classifyScene", () => {
 
   it("detects overcast white sky from bright mass without warm cast", () => {
     expect(classifyScene(stats({ brightMass: 0.4 }), 12)).toBe("overcast-white-sky");
+  });
+
+  it("bright sky over dark land is overcast, NOT split lighting (vertical structure is normal)", () => {
+    expect(
+      classifyScene(stats({ brightMass: 0.5, bimodality: 0.6, skyGroundEV: 2.5, splitEV: 0.2 }), 12),
+    ).toBe("overcast-white-sky");
   });
 
   it("bright mass with a warm cast is not overcast", () => {

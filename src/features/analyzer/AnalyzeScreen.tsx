@@ -190,7 +190,9 @@ export function AnalyzeScreen() {
         <span className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
           What are you shooting?
         </span>
-        <SegmentedControl value={intent} onChange={onIntent} options={INTENTS} />
+        <div style={{ overflowX: "auto", scrollbarWidth: "none", margin: "0 calc(-1 * var(--space-5))", padding: "0 var(--space-5)" }}>
+          <SegmentedControl value={intent} onChange={onIntent} options={INTENTS} fullWidth={false} />
+        </div>
       </div>
 
       {top && (
