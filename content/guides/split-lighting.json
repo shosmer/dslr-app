@@ -1,0 +1,31 @@
+{
+  "id": "split-lighting",
+  "title": "Split-lighting scenes",
+  "pack": "core",
+  "locations": ["Snæfellsnes", "Mountain passes"],
+  "tags": ["Half dark", "Half bright"],
+  "summary": "One half of the frame in sun, the other in shadow — the meter splits the difference and misses both.",
+  "why": "Matrix metering averages the whole frame. With a hard light boundary, the average is an exposure that exists nowhere in the scene: the bright half too hot, the dark half too thin.",
+  "lensIds": ["nikkor-35-18g"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/8" },
+      { "label": "ISO", "value": "100" },
+      { "label": "Metering", "value": "Spot", "highlight": true },
+      { "label": "Meter on", "value": "The bright half", "highlight": true },
+      { "label": "Quality", "value": "RAW" }
+    ]
+  },
+  "steps": [
+    { "text": "Hold the metering button, spin rear dial to spot", "control": "metering btn", "howtoId": "metering-mode" },
+    { "text": "Move the focus point onto the sunlit side", "control": "multi-selector", "howtoId": "focus-point" },
+    { "text": "Half-press to meter, hold AE-L, recompose", "control": "ae-l" },
+    { "text": "Let the dark half go dark — that's the picture", "control": "—" }
+  ],
+  "pitfalls": [
+    "Don't try to save both halves with +comp — the sunlit side burns first and it's unrecoverable."
+  ],
+  "levelUp": "Put the boundary on a compositional line — a ridge, a wall edge — and the split becomes the subject instead of a problem."
+}

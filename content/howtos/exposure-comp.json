@@ -1,0 +1,13 @@
+{
+  "id": "exposure-comp",
+  "title": "Set exposure compensation",
+  "controlIds": ["exp-comp-btn", "rear-dial"],
+  "steps": [
+    { "text": "Find the ± button just behind the shutter release", "control": "exp-comp" },
+    { "text": "Hold ± and spin the rear dial — minus darkens, plus brightens", "control": "rear dial" },
+    { "text": "Watch the meter scale in the viewfinder or top LCD move off zero", "control": "top lcd" },
+    { "text": "Half-press to re-meter and confirm", "control": "shutter" }
+  ],
+  "tip": "It sticks until you zero it — check the ± indicator before every new scene.",
+  "relatedGuideIds": ["black-sand-beaches", "overcast-sky", "backlit-subjects", "glacier-lagoon"]
+}

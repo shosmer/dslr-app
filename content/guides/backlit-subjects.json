@@ -1,0 +1,29 @@
+{
+  "id": "backlit-subjects",
+  "title": "Backlit subjects",
+  "pack": "core",
+  "locations": ["Everywhere"],
+  "tags": ["Silhouettes", "Rim light"],
+  "summary": "Subject against bright sky or water: the meter sees the glow and drops your subject into silhouette.",
+  "why": "The bright background dominates the average, so the camera underexposes the one thing you care about. You choose: expose the subject (sky blows) or keep the silhouette (subject goes black). Both are pictures — pick on purpose.",
+  "lensIds": ["nikkor-35-18g", "nikkor-55-200-g-ed"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/4" },
+      { "label": "ISO", "value": "200" },
+      { "label": "Exp. comp", "value": "+1.0 EV", "highlight": true },
+      { "label": "Metering", "value": "Spot — on the subject" }
+    ]
+  },
+  "steps": [
+    { "text": "Hold ±, spin rear dial to +1.0", "control": "exp-comp", "howtoId": "exposure-comp" },
+    { "text": "Or: spot metering + focus point on the subject's face", "control": "metering btn", "howtoId": "metering-mode" },
+    { "text": "Check the blinkies — background should clip, subject shouldn't", "control": "playback" }
+  ],
+  "pitfalls": [
+    "For a deliberate silhouette, do the opposite: −1.0 EV and expose for the sky."
+  ],
+  "levelUp": "Backlight is rim light: a hair's-width of glow around hair, horse manes, and grass. Slight underexposure of the subject keeps the rim burning."
+}

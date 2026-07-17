@@ -1,0 +1,126 @@
+{
+  "name": "Iceland 2026",
+  "start": "2026-08-01",
+  "end": "2026-08-13",
+  "days": [
+    {
+      "date": "2026-08-01",
+      "day": 1,
+      "location": "Reykjavík",
+      "title": "Arrival & golden hour",
+      "blurb": "Late sun over the harbor. Ease in — the 35mm and a slow walk.",
+      "guideIds": ["golden-hour", "high-contrast"],
+      "tags": ["City", "Golden hour"]
+    },
+    {
+      "date": "2026-08-02",
+      "day": 2,
+      "location": "Golden Circle",
+      "title": "Geysir & Gullfoss",
+      "blurb": "Time the burst; freeze or blur the spray. Wind decides for you.",
+      "guideIds": ["hot-springs", "waterfalls"],
+      "tags": ["Geysir", "Waterfalls"]
+    },
+    {
+      "date": "2026-08-03",
+      "day": 3,
+      "location": "Reynisfjara",
+      "title": "Black-sand beaches",
+      "blurb": "The dark sand fools matrix metering bright. Dial negative exposure comp.",
+      "guideIds": ["black-sand-beaches", "high-contrast"],
+      "tags": ["Black sand", "Waterfalls", "Golden hour"]
+    },
+    {
+      "date": "2026-08-04",
+      "day": 4,
+      "location": "South coast",
+      "title": "Seljalandsfoss & Skógafoss",
+      "blurb": "Silky or frozen — pick before you set up. Watch the spray on the front element.",
+      "guideIds": ["waterfalls", "backlit-subjects"],
+      "tags": ["Waterfalls", "Spray"]
+    },
+    {
+      "date": "2026-08-05",
+      "day": 5,
+      "location": "Jökulsárlón",
+      "title": "Glacier lagoon & Diamond Beach",
+      "blurb": "Ice is a highlight trap — protect the sparkle, let the shadows go.",
+      "guideIds": ["glacier-lagoon", "high-contrast"],
+      "tags": ["Ice", "Highlights"]
+    },
+    {
+      "date": "2026-08-06",
+      "day": 6,
+      "location": "East fjords",
+      "title": "Icelandic horses",
+      "blurb": "AF-C, 3D tracking, shutter floor 1/500s. Let them come to you.",
+      "guideIds": ["moving-animals", "panoramas"],
+      "tags": ["Horses", "Wildlife"]
+    },
+    {
+      "date": "2026-08-07",
+      "day": 7,
+      "location": "Húsavík",
+      "title": "Whale watching",
+      "blurb": "Boat + telephoto + cold spray. Fast shutter, burst mode, patience.",
+      "guideIds": ["moving-animals", "overcast-sky"],
+      "tags": ["Whales", "Boat"]
+    },
+    {
+      "date": "2026-08-08",
+      "day": 8,
+      "location": "North Iceland",
+      "title": "Dim interiors",
+      "blurb": "Turf houses and lava caves — high ISO is the tool, noise is fine.",
+      "guideIds": ["dim-interiors", "split-lighting"],
+      "tags": ["Interiors", "High ISO"]
+    },
+    {
+      "date": "2026-08-09",
+      "day": 9,
+      "location": "Highlands",
+      "title": "Long vistas",
+      "blurb": "f/8 sweet spot, hyperfocal, level horizon. The 35mm earns its keep.",
+      "guideIds": ["panoramas", "overcast-sky"],
+      "tags": ["Vistas", "Panorama"]
+    },
+    {
+      "date": "2026-08-10",
+      "day": 10,
+      "location": "Snæfellsnes",
+      "title": "Drive west",
+      "blurb": "Split light on the peninsula — half the frame dark, half bright.",
+      "guideIds": ["split-lighting", "golden-hour"],
+      "tags": ["Snæfellsnes", "Split light"]
+    },
+    {
+      "date": "2026-08-11",
+      "day": 11,
+      "location": "Snæfellsnes",
+      "title": "Eclipse scouting day",
+      "blurb": "Pick the spot, verify the timeline, save U1/U2, rehearse the sequence.",
+      "guideIds": ["golden-hour"],
+      "tags": ["Scouting", "Eclipse prep"],
+      "eclipsePrep": true
+    },
+    {
+      "date": "2026-08-12",
+      "day": 12,
+      "location": "Snæfellsnes",
+      "title": "ECLIPSE DAY",
+      "blurb": "Totality 17:45:46. Filter on for partials. Bracket the corona. Look up.",
+      "guideIds": [],
+      "tags": ["Totality", "C2 17:45:46"],
+      "eclipseDay": true
+    },
+    {
+      "date": "2026-08-13",
+      "day": 13,
+      "location": "Reykjavík",
+      "title": "Departure",
+      "blurb": "Last frames. Backlit goodbyes.",
+      "guideIds": ["backlit-subjects"],
+      "tags": ["Departure"]
+    }
+  ]
+}

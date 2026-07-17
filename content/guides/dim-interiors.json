@@ -1,0 +1,32 @@
+{
+  "id": "dim-interiors",
+  "title": "Dim interiors",
+  "pack": "iceland",
+  "locations": ["Inside the volcano", "Turf houses"],
+  "tags": ["High ISO", "Low light"],
+  "summary": "Lava chambers and turf houses: EV 4–6 light where the meter begs and flash ruins everything.",
+  "why": "Indoors at EV 5, a handholdable shutter needs every stop the kit has: the 35mm wide open at f/1.8 plus ISO 1600–3200. That's the tool for this job — the 55-200 at f/4-5.6 simply can't buy enough light.",
+  "lensIds": ["nikkor-35-18g"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Lens", "value": "35mm f/1.8", "highlight": true },
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/1.8–2.2" },
+      { "label": "ISO", "value": "1600–3200", "highlight": true },
+      { "label": "Shutter check", "value": "≥ 1/60s" },
+      { "label": "White balance", "value": "Auto" }
+    ]
+  },
+  "steps": [
+    { "text": "Mount the 35mm — this is its whole reason for being in the bag", "control": "lens mount" },
+    { "text": "Mode dial to A, front dial wide open", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Hold ISO, rear dial to 1600; go to 3200 before you accept blur", "control": "iso btn", "howtoId": "change-iso" },
+    { "text": "Brace on a wall or rail; exhale, squeeze", "control": "—" }
+  ],
+  "pitfalls": [
+    "f/1.8 depth of field is millimeters up close — put the focus point exactly where it matters.",
+    "Noise at 3200 cleans up in post; camera shake never does. Grain over blur, always."
+  ],
+  "levelUp": "A doorway or single lamp is a light source with direction — expose for the lit side and let the rest fall to black. Caves are chiaroscuro."
+}

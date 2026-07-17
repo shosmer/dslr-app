@@ -1,0 +1,30 @@
+{
+  "id": "black-sand-beaches",
+  "title": "Black-sand beaches",
+  "pack": "iceland",
+  "locations": ["Reynisfjara", "Diamond Beach"],
+  "tags": ["Black sand", "Metering trap"],
+  "summary": "The dark sand fools the meter — shots come back muddy grey. Here's the fix.",
+  "why": "Matrix metering assumes mid-gray. Black sand pushes it to overexpose — brightening sand to grey and blowing the surf.",
+  "lensIds": ["nikkor-35-18g"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/9" },
+      { "label": "ISO", "value": "100" },
+      { "label": "Exp. comp", "value": "−1.0 EV", "highlight": true },
+      { "label": "Metering", "value": "Matrix" }
+    ]
+  },
+  "steps": [
+    { "text": "Set the mode dial to A", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Spin the front dial to f/9", "control": "front dial" },
+    { "text": "Hold ±, spin rear dial to −1.0", "control": "exp-comp", "howtoId": "exposure-comp" },
+    { "text": "Half-press to meter — watch the top LCD", "control": "shutter" }
+  ],
+  "pitfalls": [
+    "Sneaker waves at Reynisfjara are deadly — never turn your back on the ocean."
+  ],
+  "levelUp": "Wet sand at the surf line mirrors the sky — get low with the 35mm and use the reflection as a second horizon."
+}

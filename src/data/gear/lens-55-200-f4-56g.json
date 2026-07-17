@@ -1,0 +1,13 @@
+{
+  "id": "nikkor-55-200-g-ed",
+  "type": "lens",
+  "name": "AF-S DX Nikkor 55-200mm f/4-5.6G ED",
+  "shortName": "55-200mm",
+  "mount": "F-DX",
+  "focal": { "min": 55, "max": 200 },
+  "aperture": { "maxWide": 4, "maxTele": 5.6, "min": 32 },
+  "filterThread": 52,
+  "vr": false,
+  "vrUnconfirmed": true,
+  "notes": "82.5-300mm equivalent. Wildlife, compression, eclipse close-ups at 200mm. Confirm VR variant on the barrel (PRD §17 Q2)."
+}

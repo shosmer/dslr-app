@@ -1,0 +1,30 @@
+{
+  "id": "panoramas",
+  "title": "Landscape panoramas & long vistas",
+  "pack": "iceland",
+  "locations": ["Highlands", "Ring Road"],
+  "tags": ["Vistas", "Hyperfocal"],
+  "summary": "Front-to-back sharpness for the big views — aperture sweet spot plus a focus trick.",
+  "why": "Every lens is sharpest two-three stops down — for this kit, f/8. Focus a third into the scene (roughly the hyperfocal point) and depth of field covers from near foreground to the horizon. Diffraction past f/11 softens the whole frame.",
+  "lensIds": ["nikkor-35-18g"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/8", "highlight": true },
+      { "label": "ISO", "value": "100" },
+      { "label": "Focus", "value": "⅓ into the scene", "highlight": true },
+      { "label": "White balance", "value": "Daylight" }
+    ]
+  },
+  "steps": [
+    { "text": "Mode dial to A, front dial to f/8", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Move the focus point to something a third of the way in", "control": "multi-selector", "howtoId": "focus-point" },
+    { "text": "For stitched panos: switch to M so every frame matches, overlap 30%", "control": "mode dial" },
+    { "text": "Level the horizon — the viewfinder grid is in Custom Setting d2", "control": "menu" }
+  ],
+  "pitfalls": [
+    "A tilted horizon costs crop on every frame of a stitch — level first, shoot second."
+  ],
+  "levelUp": "Shoot panos vertical: 5–6 portrait frames stitch into a wider, taller, sharper file than one horizontal ever gets."
+}

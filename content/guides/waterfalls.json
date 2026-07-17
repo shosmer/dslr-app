@@ -1,0 +1,32 @@
+{
+  "id": "waterfalls",
+  "title": "Waterfalls — silky vs. frozen",
+  "pack": "iceland",
+  "locations": ["Seljalandsfoss", "Skógafoss", "Gullfoss"],
+  "tags": ["Waterfalls", "ND filter", "Spray"],
+  "summary": "Silky ribbon or frozen chaos — two different shutter worlds, decide before you set up.",
+  "why": "Water at ½s blurs into silk; at 1/1000s every droplet hangs sharp. Mid-range shutters give you neither — the mush zone. Iceland's daylight is too bright for ½s without help, hence the ND on the 52mm thread.",
+  "lensIds": ["nikkor-35-18g"],
+  "recipe": {
+    "accent": "teal",
+    "rows": [
+      { "label": "Mode", "value": "M — Manual" },
+      { "label": "Aperture", "value": "f/16" },
+      { "label": "Shutter", "value": "1/2s", "highlight": true },
+      { "label": "ISO", "value": "100" },
+      { "label": "Filter", "value": "6-stop ND", "highlight": true },
+      { "label": "Support", "value": "Tripod + 2s timer" }
+    ]
+  },
+  "steps": [
+    { "text": "Tripod down, compose, focus, then switch the lens to M so AF can't hunt", "control": "af/m switch", "howtoId": "af-mode" },
+    { "text": "Thread the ND on, set mode dial to M", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Dial 1/2s · f/16 · ISO 100, check the histogram, adjust shutter", "control": "dials" },
+    { "text": "Fire with the 2s self-timer — hands off the body", "control": "release collar", "howtoId": "self-timer" }
+  ],
+  "pitfalls": [
+    "Seljalandsfoss spray hits the front element in seconds — compose, wipe, shoot, repeat. Microfiber in an outside pocket.",
+    "No ND? Frozen version instead: S mode, 1/1000s, and let ISO climb."
+  ],
+  "levelUp": "Bracket shutter, not exposure: ¼s, ½s, 1s render the same fall three different ways — pick the texture later."
+}

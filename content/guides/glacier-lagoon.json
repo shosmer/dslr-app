@@ -1,0 +1,29 @@
+{
+  "id": "glacier-lagoon",
+  "title": "Glacier lagoon & Diamond Beach",
+  "pack": "iceland",
+  "locations": ["Jökulsárlón", "Diamond Beach"],
+  "tags": ["Ice", "Highlights", "Polarizer"],
+  "summary": "Sunlit ice is a highlight trap: the sparkle you came for is the first thing to clip.",
+  "why": "Ice specular highlights sit stops above everything else. Protect them and the scene reads true; blow them and the diamonds turn to white plastic. On black sand the metering trap doubles.",
+  "lensIds": ["nikkor-35-18g", "nikkor-55-200-g-ed"],
+  "recipe": {
+    "accent": "teal",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/8" },
+      { "label": "ISO", "value": "100" },
+      { "label": "Exp. comp", "value": "−0.7 EV", "highlight": true },
+      { "label": "Quality", "value": "RAW", "highlight": true }
+    ]
+  },
+  "steps": [
+    { "text": "Hold ±, rear dial to −0.7", "control": "exp-comp", "howtoId": "exposure-comp" },
+    { "text": "Shoot RAW — ice blues live in the recovered highlights", "control": "qual btn", "howtoId": "image-quality" },
+    { "text": "Bracket the hero bergs 3 × 1 EV", "control": "bkt btn", "howtoId": "bracketing" }
+  ],
+  "pitfalls": [
+    "A polarizer kills the ice sparkle along with the glare — rotate it half-strength, or take it off for Diamond Beach."
+  ],
+  "levelUp": "Telephoto the lagoon: 200mm stacks bergs against the glacier face — compression turns scatter into a wall of ice."
+}

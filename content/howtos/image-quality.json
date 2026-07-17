@@ -1,0 +1,12 @@
+{
+  "id": "image-quality",
+  "title": "Set image quality (RAW+JPEG)",
+  "controlIds": ["qual-btn", "rear-dial", "front-dial"],
+  "steps": [
+    { "text": "Hold the QUAL button (rear left column, top)", "control": "qual btn" },
+    { "text": "Spin the rear dial to RAW+FINE — RAW for latitude, JPEG for instant sharing", "control": "rear dial" },
+    { "text": "Spin the front dial for JPEG size — L unless cards are tight", "control": "front dial" }
+  ],
+  "tip": "Dual slots: RAW to slot 1, JPEG to slot 2 (Shooting menu → Role played by card in Slot 2).",
+  "relatedGuideIds": ["glacier-lagoon", "high-contrast"]
+}

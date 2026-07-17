@@ -1,0 +1,13 @@
+{
+  "id": "lens-mid-tbd",
+  "type": "lens",
+  "name": "Mid-range lens (in transit)",
+  "shortName": "Mid (TBD)",
+  "mount": "F-DX",
+  "focal": { "min": 40, "max": 40 },
+  "aperture": { "maxWide": 2.8, "min": 22 },
+  "filterThread": 52,
+  "vr": false,
+  "placeholder": true,
+  "notes": "Placeholder profile — fill in real specs when the lens arrives (PRD §17 Q1)."
+}

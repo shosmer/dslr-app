@@ -1,0 +1,29 @@
+{
+  "id": "golden-hour",
+  "title": "Golden hour / low sun",
+  "pack": "core",
+  "locations": ["Reykjavík", "Everywhere"],
+  "tags": ["Warm light", "Long shadows"],
+  "summary": "August in Iceland: golden hour lasts half the evening. Don't let the camera neutralize it.",
+  "why": "Auto white balance sees warm light as a cast and cools it back to neutral — deleting the entire point of the hour. And the meter brightens the moody low light back to midday. Lock WB, bias down a touch.",
+  "lensIds": ["nikkor-35-18g"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/5.6" },
+      { "label": "ISO", "value": "200" },
+      { "label": "Exp. comp", "value": "−0.3 EV", "highlight": true },
+      { "label": "White balance", "value": "Daylight", "highlight": true }
+    ]
+  },
+  "steps": [
+    { "text": "Hold WB, spin rear dial to Daylight — not Auto", "control": "wb btn", "howtoId": "white-balance" },
+    { "text": "Hold ±, spin rear dial to −0.3", "control": "exp-comp", "howtoId": "exposure-comp" },
+    { "text": "Put the focus point where the light lands, not where it comes from", "control": "multi-selector", "howtoId": "focus-point" }
+  ],
+  "pitfalls": [
+    "Shooting into the sun drops flare across the frame — shade the front element with your hand just out of frame."
+  ],
+  "levelUp": "Work the light backwards too: turn around. The stuff being lit is often better than the sunset itself."
+}

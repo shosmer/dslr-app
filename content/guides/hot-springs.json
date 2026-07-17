@@ -1,0 +1,31 @@
+{
+  "id": "hot-springs",
+  "title": "Hot-spring steam & geysir bursts",
+  "pack": "iceland",
+  "locations": ["Geysir", "Hverir"],
+  "tags": ["Steam", "Timing"],
+  "summary": "Strokkur erupts every 6–10 minutes with almost no warning — be set before it goes.",
+  "why": "The burst lasts two seconds. There's no time to meter, focus, or think — everything is pre-set and the finger is on the shutter when the water dome swells. Steam itself is a bright diffuse subject that meters like fog: a touch of +comp keeps it white, not grey.",
+  "lensIds": ["nikkor-35-18g", "nikkor-55-200-g-ed"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "S — Shutter priority" },
+      { "label": "Shutter", "value": "1/1000s (freeze) or 1/60s (ghost)", "highlight": true },
+      { "label": "ISO", "value": "Auto · cap 1600" },
+      { "label": "Exp. comp", "value": "+0.3 EV" },
+      { "label": "AF", "value": "AF-C · pre-focused on the pool" },
+      { "label": "Release", "value": "CH burst" }
+    ]
+  },
+  "steps": [
+    { "text": "Mode dial to S, rear dial to 1/1000", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Pre-focus on the pool edge, then wait — don't re-focus during the burst", "control": "multi-selector", "howtoId": "focus-point" },
+    { "text": "Watch the dome: it swells blue-green a half-second before it goes", "control": "—" },
+    { "text": "Hold the burst through the whole eruption", "control": "shutter" }
+  ],
+  "pitfalls": [
+    "Stand upwind — steam on the front element fogs every following frame, and the sulfur mist is corrosive on contacts."
+  ],
+  "levelUp": "Backlit steam at low sun is the shot: position the plume between you and the sun, −0.7 EV, and it glows like slow fire."
+}

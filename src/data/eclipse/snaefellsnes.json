@@ -1,0 +1,77 @@
+{
+  "event": "Total solar eclipse — Tuesday, Aug 12, 2026",
+  "timezone": "Atlantic/Reykjavik (GMT year-round)",
+  "sunAltitudeDeg": 24,
+  "sources": [
+    "https://eclipse2026.is/where-to-see",
+    "https://www.timeanddate.com/eclipse/in/iceland?iso=20260812"
+  ],
+  "note": "Hellissandur C2 and durations are from the PRD's verified table. Contact times marked verified:false are interpolated estimates — TODO: cross-check against timeanddate + eclipse2026.is before the Jul 31 content freeze, and re-verify on the Day-11 scouting trip.",
+  "spots": [
+    {
+      "id": "hellissandur",
+      "name": "Hellissandur",
+      "totalitySeconds": 127,
+      "contacts": {
+        "c1": "2026-08-12T16:43:00Z",
+        "c2": "2026-08-12T17:45:46Z",
+        "max": "2026-08-12T17:46:49Z",
+        "c3": "2026-08-12T17:47:53Z",
+        "c4": "2026-08-12T18:48:00Z"
+      },
+      "verified": true
+    },
+    {
+      "id": "olafsvik",
+      "name": "Ólafsvík",
+      "totalitySeconds": 125,
+      "contacts": {
+        "c1": "2026-08-12T16:43:10Z",
+        "c2": "2026-08-12T17:45:50Z",
+        "max": "2026-08-12T17:46:52Z",
+        "c3": "2026-08-12T17:47:55Z",
+        "c4": "2026-08-12T18:48:10Z"
+      },
+      "verified": false
+    },
+    {
+      "id": "svodufoss",
+      "name": "Svöðufoss",
+      "totalitySeconds": 126,
+      "contacts": {
+        "c1": "2026-08-12T16:43:05Z",
+        "c2": "2026-08-12T17:45:48Z",
+        "max": "2026-08-12T17:46:51Z",
+        "c3": "2026-08-12T17:47:54Z",
+        "c4": "2026-08-12T18:48:05Z"
+      },
+      "verified": false
+    },
+    {
+      "id": "kirkjufell",
+      "name": "Kirkjufell",
+      "totalitySeconds": 110,
+      "contacts": {
+        "c1": "2026-08-12T16:43:40Z",
+        "c2": "2026-08-12T17:46:05Z",
+        "max": "2026-08-12T17:47:00Z",
+        "c3": "2026-08-12T17:47:55Z",
+        "c4": "2026-08-12T18:48:40Z"
+      },
+      "verified": false
+    },
+    {
+      "id": "stykkisholmur",
+      "name": "Stykkishólmur",
+      "totalitySeconds": 83,
+      "contacts": {
+        "c1": "2026-08-12T16:44:10Z",
+        "c2": "2026-08-12T17:46:25Z",
+        "max": "2026-08-12T17:47:07Z",
+        "c3": "2026-08-12T17:47:48Z",
+        "c4": "2026-08-12T18:49:10Z"
+      },
+      "verified": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "metering-mode",
+  "title": "Change metering mode",
+  "controlIds": ["metering-btn", "rear-dial"],
+  "steps": [
+    { "text": "Hold the metering button (top, left of the ± button)", "control": "metering btn" },
+    { "text": "Spin the rear dial: matrix → center-weighted → spot", "control": "rear dial" },
+    { "text": "Spot meters only the active focus point — aim it at what must be exposed right", "control": "focus point" }
+  ],
+  "tip": "Matrix for most scenes; spot when one thing matters more than the frame — a face, the bright half, the sun's edge.",
+  "relatedGuideIds": ["split-lighting", "backlit-subjects", "high-contrast"]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "high-contrast",
+  "title": "High-contrast scenes",
+  "pack": "core",
+  "locations": ["Everywhere"],
+  "tags": ["Deep shadows", "Bright highlights"],
+  "summary": "Deep shadows and bright highlights in one frame — something has to give.",
+  "why": "The D7100's sensor holds about 13 stops; a sunlit scene with cave-dark shadows can span more. The meter averages the extremes and nails neither — highlights burn while shadows block up.",
+  "lensIds": ["nikkor-35-18g", "nikkor-55-200-g-ed"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/8" },
+      { "label": "ISO", "value": "100" },
+      { "label": "Exp. comp", "value": "−0.7 EV", "highlight": true },
+      { "label": "Metering", "value": "Matrix" },
+      { "label": "Quality", "value": "RAW" }
+    ]
+  },
+  "steps": [
+    { "text": "Set the mode dial to A", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Hold ±, spin the rear dial to −0.7", "control": "exp-comp", "howtoId": "exposure-comp" },
+    { "text": "Shoot RAW so the shadows come back in post", "control": "qual btn", "howtoId": "image-quality" },
+    { "text": "For insurance, bracket 3 frames at 1 EV", "control": "bkt btn", "howtoId": "bracketing" }
+  ],
+  "pitfalls": [
+    "Trust the blinkies, not the LCD preview — the screen lies in daylight."
+  ],
+  "levelUp": "Expose for the highlights on purpose: spot-meter the brightest thing that matters, lock with AE-L, recompose. Shadows lift 2–3 stops in RAW; blown highlights are gone forever."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "white-balance",
+  "title": "Set white balance",
+  "controlIds": ["wb-btn", "rear-dial", "front-dial"],
+  "steps": [
+    { "text": "Hold the WB button (rear left column, bottom)", "control": "wb btn" },
+    { "text": "Spin the rear dial through presets — Auto, Daylight, Cloudy, Shade — on the top LCD", "control": "rear dial" },
+    { "text": "Spin the front dial to fine-tune amber–blue if a preset is close but not right", "control": "front dial" }
+  ],
+  "tip": "Shooting RAW? WB is fully recoverable later — set Cloudy and stop worrying.",
+  "relatedGuideIds": ["overcast-sky", "golden-hour"]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "crop-mode",
+  "title": "Toggle 1.3× crop mode",
+  "controlIds": ["menu-btn"],
+  "steps": [
+    { "text": "MENU → Photo shooting menu → Image area → Choose image area", "control": "menu" },
+    { "text": "Pick 1.3× (18×12) — the 55-200 now frames like 390mm equivalent", "control": "multi-selector" },
+    { "text": "Burst rises to 7 fps and the AF points cover nearly the whole frame", "control": "viewfinder" }
+  ],
+  "tip": "It's a crop, not magnification — same pixels you'd get cropping later, but AF coverage and fps improve. Great for whales.",
+  "relatedGuideIds": ["moving-animals"]
+}

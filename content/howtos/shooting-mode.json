@@ -1,0 +1,12 @@
+{
+  "id": "shooting-mode",
+  "title": "Change shooting mode (P/S/A/M)",
+  "controlIds": ["mode-dial"],
+  "steps": [
+    { "text": "Hold the mode dial lock release (center of the dial)", "control": "mode dial" },
+    { "text": "Rotate to A (you pick aperture), S (you pick shutter), or M (you pick both)", "control": "mode dial" },
+    { "text": "In A, the front dial sets aperture; in S, the rear dial sets shutter; in M, both", "control": "dials" }
+  ],
+  "tip": "A-mode is the default field mode: control depth, let the camera chase the light.",
+  "relatedGuideIds": ["panoramas", "waterfalls", "high-contrast"]
+}

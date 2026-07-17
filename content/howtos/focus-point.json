@@ -1,0 +1,13 @@
+{
+  "id": "focus-point",
+  "title": "Move the focus point",
+  "controlIds": ["multi-selector", "focus-selector-lock"],
+  "steps": [
+    { "text": "Flick the focus selector lock (around the multi-selector) off L", "control": "lock lever" },
+    { "text": "Half-press to wake the meter", "control": "shutter" },
+    { "text": "Nudge the multi-selector to walk the point across the 51-point grid", "control": "multi-selector" },
+    { "text": "Press the multi-selector center to jump back to the middle point", "control": "multi-selector" }
+  ],
+  "tip": "Put the point on the eye — focus-recompose shifts the plane at wide apertures.",
+  "relatedGuideIds": ["moving-animals", "golden-hour"]
+}

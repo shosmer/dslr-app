@@ -1,0 +1,13 @@
+{
+  "id": "u1-u2-banks",
+  "title": "Save & recall U1/U2 banks",
+  "controlIds": ["mode-dial", "menu-btn"],
+  "steps": [
+    { "text": "Dial in everything first — mode, aperture, shutter, ISO, WB, AF, metering", "control": "all controls" },
+    { "text": "MENU → Setup menu (wrench) → Save user settings → Save to U1 (or U2) → Yes", "control": "menu" },
+    { "text": "To recall: rotate the mode dial to U1 or U2 — every saved setting snaps back", "control": "mode dial" },
+    { "text": "Eclipse plan: U1 = filtered partials, U2 = totality base. One click at C2.", "control": "mode dial" }
+  ],
+  "tip": "Changes made while shooting in U1/U2 are temporary — the bank reloads on recall. Re-save to keep them.",
+  "relatedGuideIds": []
+}

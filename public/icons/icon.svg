@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Placeholder app icon: eclipse/corona motif on warm near-black.
+       Geometric placeholder only — real icon design pass is v2 backlog. -->
+  <rect width="512" height="512" rx="0" fill="#1a1917"/>
+  <!-- corona glow -->
+  <circle cx="256" cy="236" r="118" fill="none" stroke="#eeb64b" stroke-opacity="0.28" stroke-width="46"/>
+  <circle cx="256" cy="236" r="106" fill="none" stroke="#eeb64b" stroke-opacity="0.55" stroke-width="18"/>
+  <!-- occluding disc -->
+  <circle cx="256" cy="236" r="96" fill="#1a1917"/>
+  <!-- diamond-ring glint -->
+  <circle cx="330" cy="168" r="17" fill="#f5d78e"/>
+  <!-- wordmark tick: horizon line -->
+  <rect x="126" y="398" width="260" height="10" rx="5" fill="#3d3a35"/>
+  <rect x="126" y="398" width="92" height="10" rx="5" fill="#eeb64b"/>
+</svg>

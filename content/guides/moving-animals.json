@@ -1,0 +1,32 @@
+{
+  "id": "moving-animals",
+  "title": "Moving animals — horses & whales",
+  "pack": "iceland",
+  "locations": ["East fjords", "Húsavík"],
+  "tags": ["Horses", "Whales", "AF-C"],
+  "summary": "Icelandic horses and surfacing whales: unpredictable, fast, and worth every frame.",
+  "why": "Moving subjects need three things at once: a shutter floor that freezes motion, an AF system that keeps up, and enough frames to catch the peak. The D7100's AF-C + 3D tracking + 6 fps burst is built for exactly this.",
+  "lensIds": ["nikkor-55-200-g-ed"],
+  "recipe": {
+    "accent": "teal",
+    "rows": [
+      { "label": "Mode", "value": "S — Shutter priority" },
+      { "label": "Shutter", "value": "1/500s (whales 1/1000s)", "highlight": true },
+      { "label": "ISO", "value": "Auto · cap 3200" },
+      { "label": "AF", "value": "AF-C · 3D tracking", "highlight": true },
+      { "label": "Release", "value": "CH burst · 6 fps" }
+    ]
+  },
+  "steps": [
+    { "text": "Mode dial to S, rear dial to 1/500", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Focus-mode switch AF, hold center button, rear dial to AF-C", "control": "af-mode btn", "howtoId": "af-mode" },
+    { "text": "Front dial to 3D tracking", "control": "front dial", "howtoId": "af-area-mode" },
+    { "text": "Hold ISO, enable Auto ISO with the front dial", "control": "iso btn", "howtoId": "change-iso" },
+    { "text": "Release collar to CH — ride the burst at the peak moment", "control": "release collar" }
+  ],
+  "pitfalls": [
+    "On the whale boat, 1/500s isn't enough — the deck moves too. 1/1000s floor and elbows braced on the rail.",
+    "Never feed or crowd the horses for a shot — long lens, calm distance, they'll come to the fence anyway."
+  ],
+  "levelUp": "1.3× crop mode: 200mm frames like 390mm, burst rises to 7 fps, and the AF points cover the whole frame — the whale-watching cheat code."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "af-mode",
+  "title": "Switch AF mode (AF-S / AF-C)",
+  "controlIds": ["af-mode-btn", "focus-mode-switch", "rear-dial"],
+  "steps": [
+    { "text": "Set the focus-mode switch (front left, by the lens mount) to AF", "control": "af/m switch" },
+    { "text": "Hold the button in the switch's center", "control": "af-mode btn" },
+    { "text": "Spin the rear dial: AF-S for still subjects, AF-C for moving ones", "control": "rear dial" }
+  ],
+  "tip": "AF-C + release priority means it always fires — check focus in playback the first few frames.",
+  "relatedGuideIds": ["moving-animals"]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "nikkor-35-18g",
+  "type": "lens",
+  "name": "AF-S DX Nikkor 35mm f/1.8G",
+  "shortName": "35mm f/1.8",
+  "mount": "F-DX",
+  "focal": { "min": 35, "max": 35 },
+  "aperture": { "maxWide": 1.8, "min": 22 },
+  "filterThread": 52,
+  "vr": false,
+  "notes": "52.5mm equivalent. Low light, environmental shots, totality wide-angles."
+}

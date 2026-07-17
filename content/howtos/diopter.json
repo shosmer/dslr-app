@@ -1,0 +1,12 @@
+{
+  "id": "diopter",
+  "title": "Adjust the viewfinder diopter",
+  "controlIds": ["diopter"],
+  "steps": [
+    { "text": "Find the small knob right of the viewfinder", "control": "diopter" },
+    { "text": "Point at something bright, look at the AF brackets — not the scene", "control": "viewfinder" },
+    { "text": "Pull the knob out and rotate until the brackets snap sharp, then push it back in", "control": "diopter" }
+  ],
+  "tip": "If the viewfinder always looks soft, fix this before blaming the lens.",
+  "relatedGuideIds": []
+}

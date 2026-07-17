@@ -1,0 +1,12 @@
+{
+  "id": "self-timer",
+  "title": "Self-timer & tripod release",
+  "controlIds": ["release-mode-collar"],
+  "steps": [
+    { "text": "Hold the release-mode collar lock (under the mode dial) and rotate to the timer icon", "control": "release collar" },
+    { "text": "Custom Setting c3 sets the delay — 2s is the tripod sweet spot", "control": "menu" },
+    { "text": "Frame, half-press to focus, full press, hands off", "control": "shutter" }
+  ],
+  "tip": "On a tripod, 2s timer replaces a remote — no hand-shake in the frame.",
+  "relatedGuideIds": ["waterfalls", "panoramas", "dim-interiors"]
+}

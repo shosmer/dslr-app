@@ -1,0 +1,30 @@
+{
+  "id": "overcast-sky",
+  "title": "Overcast / pure white skies",
+  "pack": "core",
+  "locations": ["All-Iceland default"],
+  "tags": ["White sky", "Flat light"],
+  "summary": "Iceland's default sky: a giant white softbox that blows out and drags the mood gray.",
+  "why": "A flat bright sky reads mid-gray to the meter, so the camera overexposes it into a detail-free white sheet — and everything under it goes muddy. Bias down and the clouds keep their texture.",
+  "lensIds": ["nikkor-35-18g", "nikkor-55-200-g-ed"],
+  "recipe": {
+    "accent": "amber",
+    "rows": [
+      { "label": "Mode", "value": "A — Aperture priority" },
+      { "label": "Aperture", "value": "f/8", "highlight": true },
+      { "label": "Shutter", "value": "1/250s (auto)" },
+      { "label": "ISO", "value": "200" },
+      { "label": "Exp. comp", "value": "−0.7 EV", "highlight": true },
+      { "label": "White balance", "value": "Cloudy" }
+    ]
+  },
+  "steps": [
+    { "text": "Set the mode dial to A, front dial to f/8", "control": "mode dial", "howtoId": "shooting-mode" },
+    { "text": "Hold ±, spin rear dial to −0.7", "control": "exp-comp", "howtoId": "exposure-comp" },
+    { "text": "Hold WB, spin rear dial to Cloudy", "control": "wb btn", "howtoId": "white-balance" }
+  ],
+  "pitfalls": [
+    "Sky will clip anyway if it fills the frame — compose with less sky, or embrace the white as negative space."
+  ],
+  "levelUp": "Soft light is portrait light: overcast days are the days for faces, waterfalls, and saturated moss — save the vistas for drama."
+}

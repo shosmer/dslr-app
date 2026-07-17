@@ -1,0 +1,12 @@
+{
+  "id": "format-card",
+  "title": "Format a memory card",
+  "controlIds": ["menu-btn", "card-doors"],
+  "steps": [
+    { "text": "Back up first — formatting erases everything on the card", "control": "computer" },
+    { "text": "MENU → Setup menu (wrench) → Format memory card", "control": "menu" },
+    { "text": "Pick the slot (1 or 2), confirm Yes", "control": "multi-selector" }
+  ],
+  "tip": "Shortcut: hold the two red-FORMAT buttons (delete + metering) for 2s, then again to confirm. Format in-camera, never on the computer.",
+  "relatedGuideIds": []
+}

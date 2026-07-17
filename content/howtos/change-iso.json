@@ -1,0 +1,12 @@
+{
+  "id": "change-iso",
+  "title": "Change ISO",
+  "controlIds": ["iso-btn", "rear-dial", "front-dial"],
+  "steps": [
+    { "text": "Hold the ISO button (rear left column, second from bottom)", "control": "iso btn" },
+    { "text": "Spin the rear dial to set ISO — watch the top LCD", "control": "rear dial" },
+    { "text": "Still holding ISO, spin the front dial to toggle Auto ISO on/off", "control": "front dial" }
+  ],
+  "tip": "Field ceiling on the D7100 is ~ISO 3200 — above that, grain gets loud. Grain still beats blur.",
+  "relatedGuideIds": ["dim-interiors", "moving-animals"]
+}

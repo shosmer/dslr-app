@@ -1,0 +1,13 @@
+{
+  "id": "bracketing",
+  "title": "Set exposure bracketing",
+  "controlIds": ["bkt-btn", "rear-dial", "front-dial"],
+  "steps": [
+    { "text": "Hold the BKT button (front, below the flash button)", "control": "bkt btn" },
+    { "text": "Spin the rear dial to choose frames: 3F or 5F", "control": "rear dial" },
+    { "text": "Spin the front dial to set the step: 0.7–1.0 EV for landscapes, wider for the corona", "control": "front dial" },
+    { "text": "Fire the whole sequence — continuous release runs it in one press", "control": "shutter" }
+  ],
+  "tip": "Totality: bracket wide (1/1000s → 1s) and don't review between frames — the clock is running.",
+  "relatedGuideIds": ["high-contrast", "glacier-lagoon"]
+}
