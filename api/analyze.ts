@@ -14,10 +14,7 @@ interface AiEnhancement {
   pitfalls: string[];
 }
 
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== "POST") {
-    return json({ error: "POST only" }, 405);
-  }
+export async function POST(req: Request): Promise<Response> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return json({ error: "AI enhancement not configured" }, 501);
