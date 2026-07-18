@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Camera, Sparkles, TriangleAlert, Wifi, WifiOff } from "lucide-react";
+import { ArrowRight, Camera, Images, Sparkles, TriangleAlert, Wifi, WifiOff } from "lucide-react";
 import { Badge, Button, Card, RecipeTable, SegmentedControl } from "@/components/ds";
 import { useAppStore, type IntentId } from "@/app/store";
 import { BODY, LENSES, lensById } from "@/data/gear";
@@ -15,9 +15,21 @@ const INTENTS: { value: IntentId; label: string }[] = [
   { value: "lowlight", label: "Low light" },
 ];
 
+/** Manual EV anchors for captures that arrive without EXIF (iOS in-app camera
+ *  strips it — feedback from the 7/18 device test). PRD §7 anchor table. */
+const LIGHT_LEVELS: { value: string; label: string; ev: number }[] = [
+  { value: "sun", label: "Bright sun", ev: 15 },
+  { value: "hazy", label: "Hazy bright", ev: 13 },
+  { value: "overcast", label: "Overcast", ev: 12 },
+  { value: "golden", label: "Golden hour", ev: 9.5 },
+  { value: "indoors", label: "Indoors", ev: 6 },
+  { value: "dark", label: "Very dim", ev: 4 },
+];
+
 export function AnalyzeScreen() {
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const libraryRef = useRef<HTMLInputElement>(null);
   const intent = useAppStore((s) => s.intent);
   const setIntent = useAppStore((s) => s.setIntent);
   const mountedLensId = useAppStore((s) => s.mountedLensId);
@@ -31,15 +43,20 @@ export function AnalyzeScreen() {
   const [busy, setBusy] = useState(false);
   const [ai, setAi] = useState<AiEnhancement | null>(null);
   const [aiState, setAiState] = useState<"idle" | "busy" | "failed">("idle");
+  const [lightLevel, setLightLevel] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
 
   const lens = lensById(mountedLensId);
 
-  const run = async (f: File, intentOverride?: IntentId) => {
+  const run = async (f: File, intentOverride?: IntentId, lightOverride?: string | null) => {
     setBusy(true);
     setAi(null);
     setAiState("idle");
+    setSaved(false);
     try {
-      const r = await analyzeCapture(f, intentOverride ?? intent, lens, BODY);
+      const level = lightOverride === undefined ? lightLevel : lightOverride;
+      const evOverride = LIGHT_LEVELS.find((l) => l.value === level)?.ev ?? null;
+      const r = await analyzeCapture(f, intentOverride ?? intent, lens, BODY, { evOverride });
       setResult(r);
       addHistory({
         id: Date.now().toString(36),
@@ -55,9 +72,10 @@ export function AnalyzeScreen() {
   const onPick = (f: File | undefined | null) => {
     if (!f) return;
     setFile(f);
+    setLightLevel(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(f));
-    void run(f);
+    void run(f, undefined, null);
   };
 
   const onIntent = (v: string) => {
@@ -68,6 +86,11 @@ export function AnalyzeScreen() {
   const onLens = (v: string) => {
     setMountedLens(v);
     if (file) setTimeout(() => void run(file), 0);
+  };
+
+  const onLightLevel = (v: string) => {
+    setLightLevel(v);
+    if (file) void run(file, undefined, v);
   };
 
   const onEnhance = async () => {
@@ -106,10 +129,17 @@ export function AnalyzeScreen() {
       </header>
 
       <input
-        ref={inputRef}
+        ref={cameraRef}
         type="file"
         accept="image/*"
         capture="environment"
+        style={{ display: "none" }}
+        onChange={(e) => onPick(e.target.files?.[0])}
+      />
+      <input
+        ref={libraryRef}
+        type="file"
+        accept="image/*"
         style={{ display: "none" }}
         onChange={(e) => onPick(e.target.files?.[0])}
       />
@@ -117,7 +147,7 @@ export function AnalyzeScreen() {
       {previewUrl ? (
         <div
           className="press"
-          onClick={() => inputRef.current?.click()}
+          onClick={() => cameraRef.current?.click()}
           style={{
             height: 150,
             borderRadius: "var(--radius-lg)",
@@ -144,7 +174,9 @@ export function AnalyzeScreen() {
             {busy
               ? "analyzing…"
               : result
-                ? `${result.ev != null ? `EV ${result.ev.toFixed(1)}` : "no EXIF"} · ${result.evLabel} · tap to retake`
+                ? result.evSource === "manual"
+                  ? `EV ${result.ev!.toFixed(1)} · set by you · tap to retake`
+                  : `${result.ev != null ? `EV ${result.ev.toFixed(1)}` : "no EXIF"} · ${result.evLabel} · tap to retake`
                 : "tap to retake"}
           </span>
           <div style={{ position: "absolute", top: 12, right: 12 }}>
@@ -155,7 +187,7 @@ export function AnalyzeScreen() {
         <button
           type="button"
           className="stripe press"
-          onClick={() => inputRef.current?.click()}
+          onClick={() => cameraRef.current?.click()}
           style={{
             height: 180,
             alignItems: "center",
@@ -174,6 +206,16 @@ export function AnalyzeScreen() {
           <span>settings for this light, in under 2 seconds — offline</span>
         </button>
       )}
+
+      <Button
+        variant="ghost"
+        size="sm"
+        fullWidth
+        iconLeft={<Images size={16} />}
+        onClick={() => libraryRef.current?.click()}
+      >
+        Import from library — keeps exposure EXIF
+      </Button>
 
       <div>
         <span className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
@@ -194,6 +236,29 @@ export function AnalyzeScreen() {
           <SegmentedControl value={intent} onChange={onIntent} options={INTENTS} fullWidth={false} />
         </div>
       </div>
+
+      {result && result.evSource !== "exif" && (
+        <div>
+          <span className="eyebrow" style={{ display: "block", marginBottom: 6, color: "var(--warn)" }}>
+            No exposure EXIF in this capture — what's the light like?
+          </span>
+          <div
+            style={{
+              overflowX: "auto",
+              scrollbarWidth: "none",
+              margin: "0 calc(-1 * var(--space-5))",
+              padding: "0 var(--space-5)",
+            }}
+          >
+            <SegmentedControl
+              value={lightLevel ?? ""}
+              onChange={onLightLevel}
+              options={LIGHT_LEVELS.map((l) => ({ value: l.value, label: l.label }))}
+              fullWidth={false}
+            />
+          </div>
+        </div>
+      )}
 
       {top && (
         <Card tone="amber" glow>
@@ -272,7 +337,9 @@ export function AnalyzeScreen() {
         <Button
           variant="secondary"
           fullWidth
+          disabled={saved}
           onClick={() => {
+            if (saved) return;
             addPreset({
               id: `analyzer-${Date.now().toString(36)}`,
               name: `${result.sceneLabel} · ${lens.shortName}`,
@@ -281,9 +348,10 @@ export function AnalyzeScreen() {
               lensId: lens.id,
               rows: top!.rows,
             });
+            setSaved(true);
           }}
         >
-          Save as preset
+          {saved ? "Saved to presets" : "Save as preset"}
         </Button>
       )}
 

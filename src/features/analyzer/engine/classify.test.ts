@@ -55,6 +55,10 @@ describe("classifyScene", () => {
     expect(classifyScene(stats({ clipHigh: 0.05, clipLow: 0.05 }), 13)).toBe("high-contrast");
   });
 
+  it("bright center in dark surround (window in a dim room) is high contrast, not flat", () => {
+    expect(classifyScene(stats({ backlitEV: -2 }), 11)).toBe("high-contrast");
+  });
+
   it("falls through to flat-even", () => {
     expect(classifyScene(stats({}), 11)).toBe("flat-even");
   });

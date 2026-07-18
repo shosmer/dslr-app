@@ -26,6 +26,9 @@ export function classifyScene(stats: FrameStats, ev: number | null): SceneClass 
   if (ev != null && ev < 7) return "low-light";
   if (stats.bimodality > 0.35 && stats.splitEV > 1.5) return "split-lighting";
   if (stats.backlitEV > 1.2) return "backlit";
+  // Inverse backlight: a bright light source centered in dark surroundings
+  // (window in a dim room, spotlit subject) — a highlight-protection problem
+  if (stats.backlitEV < -1.2) return "high-contrast";
   if (stats.brightMass > 0.28 && stats.clipLow < 0.08 && !warmCast) return "overcast-white-sky";
   if (stats.clipHigh > 0.02 && stats.clipLow > 0.02) return "high-contrast";
   if (stats.stdev > 0.26) return "high-contrast";

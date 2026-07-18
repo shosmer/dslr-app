@@ -8,7 +8,7 @@ import { recommend, type Combo } from "./recommend";
 
 export interface AnalysisResult {
   ev: number | null;
-  evSource: "exif" | "scene-estimate";
+  evSource: "exif" | "scene-estimate" | "manual";
   evLabel: string;
   scene: SceneClass;
   sceneLabel: string;
@@ -37,12 +37,19 @@ async function decodeToCanvas(file: File, maxSize: number): Promise<HTMLCanvasEl
   return canvas;
 }
 
+export interface AnalyzeOptions {
+  /** User-asserted scene EV — the fallback anchor when the capture has no EXIF
+   *  (iOS in-app captures often arrive stripped; library imports keep it). */
+  evOverride?: number | null;
+}
+
 /** Full local analysis — deterministic, offline, <2s (PRD §7 acceptance). */
 export async function analyzeCapture(
   file: File,
   intent: IntentId,
   lens: GearLens,
   body: GearBody,
+  opts: AnalyzeOptions = {},
 ): Promise<AnalysisResult> {
   const t0 = performance.now();
 
@@ -65,7 +72,19 @@ export async function analyzeCapture(
     exposureTime: exif?.ExposureTime,
     iso: exif?.ISO,
   });
-  const ev = evExif != null ? correctedSceneEV(evExif, stats.meanLinear) : null;
+  let ev: number | null;
+  let evSource: AnalysisResult["evSource"];
+  if (evExif != null) {
+    ev = correctedSceneEV(evExif, stats.meanLinear);
+    evSource = "exif";
+  } else if (opts.evOverride != null) {
+    // The user told us the light level — take it as-is, no mid-gray correction
+    ev = opts.evOverride;
+    evSource = "manual";
+  } else {
+    ev = null;
+    evSource = "scene-estimate";
+  }
 
   const scene = classifyScene(stats, ev);
   const wb = suggestWhiteBalance(stats, scene);
@@ -80,7 +99,7 @@ export async function analyzeCapture(
 
   return {
     ev,
-    evSource: ev != null ? "exif" : "scene-estimate",
+    evSource,
     evLabel: ev != null ? evLabel(ev) : SCENE_LABELS[scene].toLowerCase(),
     scene,
     sceneLabel: SCENE_LABELS[scene],
