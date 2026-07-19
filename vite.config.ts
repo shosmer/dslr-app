@@ -1,11 +1,25 @@
 /// <reference types="vitest/config" />
 import path from "node:path";
+import { execSync } from "node:child_process";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+function buildId(): string {
+  try {
+    const sha = execSync("git rev-parse --short HEAD").toString().trim();
+    const date = new Date().toISOString().slice(5, 16).replace("T", " ");
+    return `${sha} · ${date}`;
+  } catch {
+    return "dev";
+  }
+}
+
 export default defineConfig({
+  define: {
+    __BUILD_ID__: JSON.stringify(buildId()),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -16,7 +30,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "prompt", // never silently swap versions mid-trip (PRD §13)
+      // autoUpdate: new SW takes over on next launch (skipWaiting+clientsClaim).
+      // "Never break mid-trip" is enforced by the Jul 31 deploy freeze, not by
+      // making updates unreachable — iOS standalone never surfaced the prompt.
+      registerType: "autoUpdate",
       includeAssets: ["icons/*.png", "icons/*.svg"],
       manifest: {
         name: "Ljósmynd — D7100 Field Companion",

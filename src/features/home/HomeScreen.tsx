@@ -137,6 +137,10 @@ export function HomeScreen() {
       <Button variant="secondary" fullWidth iconLeft={<Download size={18} />} onClick={onTripMode}>
         {tripMode ?? "Trip mode — download everything"}
       </Button>
+
+      <div className="eyebrow" style={{ textAlign: "center" }}>
+        build {__BUILD_ID__}
+      </div>
     </div>
   );
 }
