@@ -31,7 +31,7 @@ export function HomeScreen() {
 
   return (
     <div className="screen">
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <header className="screen-header">
         <div>
           <div className="display" style={{ fontSize: 26 }}>
             Ljósmynd

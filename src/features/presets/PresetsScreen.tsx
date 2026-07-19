@@ -42,10 +42,12 @@ export function PresetsScreen() {
 
   return (
     <div className="screen">
-      <header style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <IconButton icon={<ArrowLeft size={24} />} label="Back" onClick={() => navigate(-1)} />
-        <div className="display" style={{ fontSize: 22 }}>
-          Presets & notes
+      <header className="screen-header">
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <IconButton icon={<ArrowLeft size={24} />} label="Back" onClick={() => navigate(-1)} />
+          <div className="display" style={{ fontSize: 22 }}>
+            Presets & notes
+          </div>
         </div>
       </header>
 

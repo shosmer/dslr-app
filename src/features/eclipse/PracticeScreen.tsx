@@ -18,8 +18,8 @@ export function PracticeScreen() {
 
   return (
     <div className="screen">
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <header className="screen-header">
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <div className="display" style={{ fontSize: 22 }}>
             Practice run
           </div>

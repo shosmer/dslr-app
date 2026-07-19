@@ -24,7 +24,7 @@ export function EclipseScreen() {
 
   return (
     <div className="screen">
-      <header style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+      <header className="screen-header">
         <div className="display" style={{ fontSize: 24 }}>
           Eclipse Mode
         </div>

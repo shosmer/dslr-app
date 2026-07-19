@@ -22,9 +22,11 @@ export function CameraScreen() {
 
   return (
     <div className="screen">
-      <div className="display" style={{ fontSize: 24 }}>
-        Camera
-      </div>
+      <header className="screen-header">
+        <div className="display" style={{ fontSize: 24 }}>
+          Camera
+        </div>
+      </header>
 
       <div className="stripe" style={{ height: 280, alignItems: "center", justifyContent: "center" }}>
         [ interactive 3D D7100 — model sourcing gate, PRD §6 ]

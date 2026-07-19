@@ -36,9 +36,9 @@ export function GuideDetailScreen() {
 
   return (
     <div className="screen">
-      <header style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <IconButton icon={<ArrowLeft size={24} />} label="Back" onClick={() => navigate(-1)} />
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <header className="screen-header">
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <IconButton icon={<ArrowLeft size={24} />} label="Back" onClick={() => navigate(-1)} />
           {guide.pack === "iceland" && <Badge tone="teal">Iceland pack</Badge>}
           {guide.locations.slice(0, 2).map((l) => (
             <Badge key={l}>{l}</Badge>

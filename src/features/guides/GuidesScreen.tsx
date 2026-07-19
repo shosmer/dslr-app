@@ -53,12 +53,14 @@ export function GuidesScreen() {
 
   return (
     <div className="screen">
-      <header>
-        <div className="display" style={{ fontSize: 24 }}>
-          Guides
-        </div>
-        <div className="eyebrow" style={{ marginTop: 4 }}>
-          Recipe-first · works offline
+      <header className="screen-header">
+        <div>
+          <div className="display" style={{ fontSize: 24 }}>
+            Guides
+          </div>
+          <div className="eyebrow" style={{ marginTop: 4 }}>
+            Recipe-first · works offline
+          </div>
         </div>
       </header>
       {section("Core lighting challenges", core)}

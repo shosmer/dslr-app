@@ -32,9 +32,9 @@ export function HowToScreen() {
 
   return (
     <div className="screen">
-      <header style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <IconButton icon={<ArrowLeft size={24} />} label="Back" onClick={() => navigate(-1)} />
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <header className="screen-header">
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <IconButton icon={<ArrowLeft size={24} />} label="Back" onClick={() => navigate(-1)} />
           {howto.controlIds.slice(0, 3).map((c) => (
             <Badge key={c} size="sm" tone="teal">
               {c.replace(/-/g, " ")}

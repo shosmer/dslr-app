@@ -30,7 +30,7 @@ export function TabShell() {
   const badge = daysToEclipse > 0 && daysToEclipse <= 30 ? String(daysToEclipse) : undefined;
 
   return (
-    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: "var(--bg-app)" }}>
+    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", background: "var(--bg-app)" }}>
       <div className="scroll-area" style={{ flex: 1 }} key={activeTabId(location.pathname)}>
         <Outlet />
       </div>
