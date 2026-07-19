@@ -22,9 +22,12 @@ export function TabBar({ items, activeId, onChange }: TabBarProps) {
   return (
     <nav
       style={{
+        // Exactly one bar-height row + one clamped home-indicator spacer —
+        // the inset is never part of the row height, so it can't compound.
         display: "flex",
-        height: "calc(var(--tabbar-h) + env(safe-area-inset-bottom))",
-        paddingBottom: "env(safe-area-inset-bottom)",
+        height: "var(--tabbar-h)",
+        boxSizing: "content-box",
+        paddingBottom: "min(env(safe-area-inset-bottom, 0px), 28px)",
         background: "oklch(0.16 0.007 60 / 0.85)",
         backdropFilter: "var(--blur-scrim)",
         WebkitBackdropFilter: "var(--blur-scrim)",
