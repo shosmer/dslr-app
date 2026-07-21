@@ -29,11 +29,21 @@ export function TabShell() {
   const daysToEclipse = Math.ceil((ECLIPSE_C2.getTime() - now) / 86_400_000);
   const badge = daysToEclipse > 0 && daysToEclipse <= 30 ? String(daysToEclipse) : undefined;
 
-  // DEBUG (temporary, always on for this build): bright shell/nav borders to
-  // make the canvas boundary visible on device — decides whether the gap is
-  // inside the canvas (my bug) or in the OS-reserved strip below it.
+  // DEBUG (temporary): magenta bar pinned to the BOTTOM of the web viewport.
+  // If it sits at the physical screen bottom, web content reaches the bottom
+  // (any gap is my bug). If there's black BELOW the magenta bar, that black is
+  // iOS's reserved strip — unreachable by any web code. Lime marks viewport top.
   const debug = true;
   return (
+    <>
+      {debug && (
+        <>
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 5, background: "lime", zIndex: 99999 }} />
+          <div
+            style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 5, background: "magenta", zIndex: 99999 }}
+          />
+        </>
+      )}
     <div
       style={{
         position: "fixed",
@@ -65,5 +75,6 @@ export function TabShell() {
         />
       </div>
     </div>
+    </>
   );
 }
