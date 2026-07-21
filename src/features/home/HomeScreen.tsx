@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, Eclipse, Rotate3d, ScanLine, Settings } from "lucide-react";
+import { Check, Eclipse, Rotate3d, ScanLine, Settings, TriangleAlert } from "lucide-react";
 import { Badge, Button, Card, IconButton } from "@/components/ds";
 import { LiveCountdown } from "@/components/LiveCountdown";
 import { useAppStore } from "@/app/store";
 import { localISODate, useNow } from "@/lib/time";
 import { ECLIPSE_C2 } from "@/features/eclipse/timeline";
 import { tripDayFor } from "./trip";
-import { downloadEverything } from "@/lib/tripmode";
+import { useOfflineReadiness } from "@/lib/offline";
 import { viewportDebugLine } from "@/lib/viewport";
 
 export function HomeScreen() {
@@ -15,7 +15,7 @@ export function HomeScreen() {
   // Minute tick is enough for the trip-day card; the countdown ticks itself
   const now = useNow(60_000);
   const lastHowToId = useAppStore((s) => s.lastHowToId);
-  const [tripMode, setTripMode] = useState<string | null>(null);
+  const offline = useOfflineReadiness();
 
   const [debugLine, setDebugLine] = useState("");
   useEffect(() => {
@@ -23,11 +23,6 @@ export function HomeScreen() {
   }, []);
 
   const today = tripDayFor(localISODate(new Date(now)));
-
-  const onTripMode = async () => {
-    setTripMode("Downloading…");
-    setTripMode(await downloadEverything());
-  };
 
   return (
     <div className="screen">
@@ -107,9 +102,29 @@ export function HomeScreen() {
         </Card>
       </div>
 
-      <Button variant="secondary" fullWidth iconLeft={<Download size={18} />} onClick={onTripMode}>
-        {tripMode ?? "Trip mode — download everything"}
-      </Button>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 20 }}>
+        {offline.ready ? (
+          <>
+            <span style={{ color: "var(--safe)", display: "flex" }}>
+              <Check size={15} />
+            </span>
+            <span className="eyebrow" style={{ color: "var(--safe)" }}>
+              Ready offline{offline.mb ? ` · ${offline.mb.toFixed(1)} MB` : ""}
+            </span>
+          </>
+        ) : offline.checked ? (
+          <>
+            <span style={{ color: "var(--warn)", display: "flex" }}>
+              <TriangleAlert size={15} />
+            </span>
+            <span className="eyebrow" style={{ color: "var(--warn)" }}>
+              Connect once to finish caching
+            </span>
+          </>
+        ) : (
+          <span className="eyebrow">Checking offline cache…</span>
+        )}
+      </div>
 
       <div className="eyebrow" style={{ textAlign: "center" }}>
         build {__BUILD_ID__}
