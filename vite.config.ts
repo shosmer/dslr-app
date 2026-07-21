@@ -41,19 +41,14 @@ export default defineConfig({
         description:
           "Offline-first photography companion for the Nikon D7100 — lighting analyzer, field guides, and Eclipse Mode for Aug 12, 2026.",
         start_url: "/",
-        // fullscreen: iOS standalone reserves a ~62pt strip at the bottom of
-        // the canvas (measured on-device 7/20); fullscreen requests the whole
-        // screen. display_override falls back gracefully where unsupported.
-        display: "fullscreen",
-        display_override: ["fullscreen", "standalone"],
+        // standalone (NOT fullscreen): fullscreen zeroed iOS safe-area insets
+        // (SAT0/SAB0 on-device) and pinned the canvas to the top, stranding the
+        // unreachable bottom strip below the nav bar. standalone bottom-aligns
+        // the canvas so the nav bar sits flush at the physical bottom, native.
+        display: "standalone",
         orientation: "portrait",
-        // Painted by iOS on the launch screen AND inside the strip it reserves
-        // below the app canvas in standalone mode — matched to the tab bar's
-        // rendered tone (oklch(0.16 0.007 60 / 0.85) over --bg-app) so the
-        // reserved strip reads as part of the bar, ESPN-style. Not an in-app
-        // design change: no pixel the app itself draws uses this value.
-        background_color: "#0f0c09",
-        theme_color: "#0f0c09",
+        background_color: "#1a1917",
+        theme_color: "#1a1917",
         icons: [
           { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },

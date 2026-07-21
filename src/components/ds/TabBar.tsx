@@ -22,14 +22,13 @@ export function TabBar({ items, activeId, onChange }: TabBarProps) {
   return (
     <nav
       style={{
-        // Exactly one bar-height row + one clamped home-indicator spacer —
-        // the inset is never part of the row height, so it can't compound.
+        // Native pattern: one bar-height row + the home-indicator inset below
+        // it (standalone reports SAB≈34; the bar background flows into that
+        // zone and labels sit above it, exactly like a UIKit tab bar).
         display: "flex",
         height: "var(--tabbar-h)",
         boxSizing: "content-box",
-        // --tabbar-inset is set at runtime (lib/viewport.ts): 0 when the OS
-        // already ends the canvas above the home indicator, env-based otherwise
-        paddingBottom: "var(--tabbar-inset, min(env(safe-area-inset-bottom, 0px), 28px))",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: "oklch(0.16 0.007 60 / 0.85)",
         backdropFilter: "var(--blur-scrim)",
         WebkitBackdropFilter: "var(--blur-scrim)",

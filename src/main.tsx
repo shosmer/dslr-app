@@ -11,9 +11,6 @@ import "@fontsource/ibm-plex-mono/600.css";
 import "./styles/index.css";
 import { App } from "./app/App";
 import { registerSW } from "virtual:pwa-register";
-import { applyViewportFixups } from "./lib/viewport";
-
-applyViewportFixups();
 
 // Ask the browser not to evict our offline content mid-trip (PRD §13)
 if (navigator.storage?.persist) {
