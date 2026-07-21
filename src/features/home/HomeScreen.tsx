@@ -15,6 +15,8 @@ export function HomeScreen() {
   // Minute tick is enough for the trip-day card; the countdown ticks itself
   const now = useNow(60_000);
   const lastHowToId = useAppStore((s) => s.lastHowToId);
+  const eclipseEnabled = useAppStore((s) => s.eclipseEnabled);
+  const destinationId = useAppStore((s) => s.destinationId);
   const offline = useOfflineReadiness();
 
   const [debugLine, setDebugLine] = useState("");
@@ -22,7 +24,8 @@ export function HomeScreen() {
     setDebugLine(viewportDebugLine());
   }, []);
 
-  const today = tripDayFor(localISODate(new Date(now)));
+  // Trip card only when a destination with an itinerary is selected
+  const today = destinationId === "iceland-2026" ? tripDayFor(localISODate(new Date(now))) : null;
 
   return (
     <div className="screen">
@@ -31,24 +34,28 @@ export function HomeScreen() {
           <div className="display" style={{ fontSize: 26 }}>
             Ljósmynd
           </div>
-          <div className="eyebrow">Nikon D7100 · Iceland '26</div>
+          <div className="eyebrow">
+            Nikon D7100{destinationId === "iceland-2026" ? " · Iceland '26" : ""}
+          </div>
         </div>
-        <IconButton icon={<Settings size={24} />} label="Presets & settings" onClick={() => navigate("/presets")} />
+        <IconButton icon={<Settings size={24} />} label="Settings" onClick={() => navigate("/settings")} />
       </header>
 
-      <Card tone="amber" glow>
-        <div style={{ marginBottom: 10 }}>
-          <Badge tone="amber" icon={<Eclipse size={13} />}>
-            Total solar eclipse
-          </Badge>
-        </div>
-        <LiveCountdown label="Totality · Snæfellsnes · Aug 12, 17:45:46" target={ECLIPSE_C2} tone="amber" size="md" />
-        <div style={{ marginTop: 16 }}>
-          <Button variant="primary" fullWidth iconLeft={<Eclipse size={18} />} onClick={() => navigate("/eclipse")}>
-            Open Eclipse Mode
-          </Button>
-        </div>
-      </Card>
+      {eclipseEnabled && (
+        <Card tone="amber" glow>
+          <div style={{ marginBottom: 10 }}>
+            <Badge tone="amber" icon={<Eclipse size={13} />}>
+              Total solar eclipse
+            </Badge>
+          </div>
+          <LiveCountdown label="Totality · Snæfellsnes · Aug 12, 17:45:46" target={ECLIPSE_C2} tone="amber" size="md" />
+          <div style={{ marginTop: 16 }}>
+            <Button variant="primary" fullWidth iconLeft={<Eclipse size={18} />} onClick={() => navigate("/eclipse")}>
+              Open Eclipse Mode
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {today && (
         <Card

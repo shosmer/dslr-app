@@ -3,6 +3,7 @@ import { BookOpen, Camera, Eclipse, House, ScanLine } from "lucide-react";
 import { TabBar } from "@/components/ds";
 import { ECLIPSE_C2 } from "@/features/eclipse/timeline";
 import { useNow } from "@/lib/time";
+import { useAppStore } from "./store";
 
 const TABS = [
   { id: "home", path: "/", label: "Home", icon: <House size={24} /> },
@@ -24,10 +25,14 @@ export function TabShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const now = useNow(60_000);
+  const eclipseEnabled = useAppStore((s) => s.eclipseEnabled);
 
   // Eclipse tab badge: days remaining, promoted in the final 30 days (PRD §11)
   const daysToEclipse = Math.ceil((ECLIPSE_C2.getTime() - now) / 86_400_000);
   const badge = daysToEclipse > 0 && daysToEclipse <= 30 ? String(daysToEclipse) : undefined;
+
+  // Eclipse can be turned off in Settings (post-trip / everyday use)
+  const tabs = eclipseEnabled ? TABS : TABS.filter((t) => t.id !== "eclipse");
 
   return (
     <div
@@ -47,10 +52,10 @@ export function TabShell() {
         <TabBar
           activeId={activeTabId(location.pathname)}
           onChange={(id) => {
-            const tab = TABS.find((t) => t.id === id);
+            const tab = tabs.find((t) => t.id === id);
             if (tab) navigate(tab.path);
           }}
-          items={TABS.map(({ id, label, icon }) => ({
+          items={tabs.map(({ id, label, icon }) => ({
             id,
             label,
             icon,

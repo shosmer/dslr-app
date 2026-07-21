@@ -1,0 +1,17 @@
+import { chromium } from "playwright";
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+await p.goto("http://localhost:4175/", { waitUntil: "networkidle" });
+await p.getByLabel("Settings").click();
+await p.waitForTimeout(200);
+await p.getByRole("switch", { name: "Eclipse Mode" }).click();
+await p.getByText("Everyday", { exact: true }).click();
+await p.waitForTimeout(200);
+await p.getByLabel("Back").click();
+await p.waitForTimeout(600);
+const url = p.url();
+const heroCount = await p.getByText("Total solar eclipse").count();
+const tabCount = await p.locator("nav button").count();
+await p.screenshot({ path: "shots/home-everyday.png" });
+console.log(JSON.stringify({ url, heroCount, tabCount }));
+await b.close();

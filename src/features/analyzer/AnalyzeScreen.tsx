@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Camera, Images, Sparkles, TriangleAlert, Wifi, WifiOff } from "lucide-react";
-import { Badge, Button, Card, RecipeTable, SegmentedControl } from "@/components/ds";
+import { ArrowRight, Bookmark, Camera, Images, Sparkles, TriangleAlert, Wifi, WifiOff } from "lucide-react";
+import { Badge, Button, Card, IconButton, RecipeTable, SegmentedControl } from "@/components/ds";
 import { useAppStore, type IntentId } from "@/app/store";
 import { BODY, LENSES, lensById } from "@/data/gear";
+import { PresetsSheet } from "@/features/presets/PresetsSheet";
 import { analyzeCapture, type AnalysisResult } from "./engine/analyze";
 import { enhanceWithAI, type AiEnhancement } from "./ai/enhance";
 
@@ -34,6 +35,7 @@ export function AnalyzeScreen() {
   const setIntent = useAppStore((s) => s.setIntent);
   const mountedLensId = useAppStore((s) => s.mountedLensId);
   const setMountedLens = useAppStore((s) => s.setMountedLens);
+  const activeLensIds = useAppStore((s) => s.activeLensIds);
   const addHistory = useAppStore((s) => s.addHistory);
   const addPreset = useAppStore((s) => s.addPreset);
 
@@ -45,7 +47,10 @@ export function AnalyzeScreen() {
   const [aiState, setAiState] = useState<"idle" | "busy" | "failed">("idle");
   const [lightLevel, setLightLevel] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [presetsOpen, setPresetsOpen] = useState(false);
 
+  // Only the lenses turned on in Settings ("in the bag")
+  const availableLenses = LENSES.filter((l) => activeLensIds.includes(l.id));
   const lens = lensById(mountedLensId);
 
   const run = async (f: File, intentOverride?: IntentId, lightOverride?: string | null) => {
@@ -117,15 +122,19 @@ export function AnalyzeScreen() {
 
   return (
     <div className="screen">
+      <PresetsSheet open={presetsOpen} onClose={() => setPresetsOpen(false)} />
       <header className="screen-header">
         <div className="display" style={{ fontSize: 24 }}>
           Analyze
         </div>
-        {result && (
-          <Badge tone="safe" icon={<WifiOff size={13} />}>
-            Offline · {(result.elapsedMs / 1000).toFixed(1)}s
-          </Badge>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {result && (
+            <Badge tone="safe" icon={<WifiOff size={13} />}>
+              Offline · {(result.elapsedMs / 1000).toFixed(1)}s
+            </Badge>
+          )}
+          <IconButton icon={<Bookmark size={22} />} label="Saved recipes" onClick={() => setPresetsOpen(true)} />
+        </div>
       </header>
 
       <input
@@ -224,7 +233,7 @@ export function AnalyzeScreen() {
         <SegmentedControl
           value={mountedLensId}
           onChange={onLens}
-          options={LENSES.map((l) => ({ value: l.id, label: l.shortName }))}
+          options={availableLenses.map((l) => ({ value: l.id, label: l.shortName }))}
         />
       </div>
 

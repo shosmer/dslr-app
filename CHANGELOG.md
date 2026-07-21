@@ -14,6 +14,25 @@ Newest first. Dates are when the work happened.
 
 ---
 
+## 2026-07-21 — Settings screen + Presets relocation (IA rework)
+
+Split the conflated gear-icon-opens-presets into two honest things.
+
+- **New Settings screen** (gear icon on Home). Four sections, each wired to real behavior:
+  - **Camera & lenses** — D7100 (fixed) + a toggle per lens ("in the bag"). Drives the Analyze lens picker and which profiles the recommender uses.
+  - **Trip** — destination selector (Iceland 2026 / Everyday). Iceland shows the Iceland guide pack + the Home trip card; Everyday hides both.
+  - **Eclipse** — on/off toggle (hides the Eclipse tab AND the Home countdown hero when off) + viewing-spot selector.
+  - **Backup** — export/import presets JSON (moved here from the old Presets screen).
+- **Presets → bottom sheet on Analyze** (bookmark icon in the Analyze header). Saved recipes open as a native slide-up sheet with notes + delete, without leaving Analyze. Replaces the standalone `/presets` screen/route.
+- **New DS pieces:** `Toggle` (iOS-style switch) and a reusable `BottomSheet` (scrim, slide-up, rubber-band guard).
+- **Home:** removed the eclipse-prep checklist card; the "download everything" button was already replaced by the passive offline-readiness line (green "Ready offline" / amber "Connect once to finish caching") — the button downloaded nothing (app self-precaches on install).
+- **Store:** added `bodyId`, `activeLensIds`, `destinationId`, `eclipseEnabled` (+ setters); route guard redirects `/eclipse` → Home when eclipse is off.
+- **Files:** `src/app/store.ts`, `src/app/App.tsx`, `src/app/TabShell.tsx`, `src/features/settings/`, `src/features/presets/PresetsSheet.tsx`, `src/components/ds/Toggle.tsx`, `src/components/BottomSheet.tsx`, `src/features/home/`, `src/features/analyzer/`, `src/features/guides/`.
+
+## 2026-07-21 — Nav bar: no rubber-band on swipe-down
+
+Non-passive `touchmove` preventDefault + `touch-action: none` on the tab bar so a swipe starting on it can't drag the page. Taps unaffected.
+
 ## 2026-07-21 — Native iOS tab-bar geometry (long debugging arc)
 
 The tab bar not sitting flush at the bottom in the installed (home-screen) app took a long diagnosis. Summary of the journey and the resolution:

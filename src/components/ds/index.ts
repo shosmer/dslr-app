@@ -8,3 +8,4 @@ export { SegmentedControl } from "./SegmentedControl";
 export { Countdown } from "./Countdown";
 export { SafetyBanner } from "./SafetyBanner";
 export { ChecklistItem } from "./ChecklistItem";
+export { Toggle } from "./Toggle";

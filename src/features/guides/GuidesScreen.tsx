@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { Badge, Card } from "@/components/ds";
+import { useAppStore } from "@/app/store";
 import { GUIDES } from "./content";
 
 export function GuidesScreen() {
   const navigate = useNavigate();
+  const destinationId = useAppStore((s) => s.destinationId);
   const core = GUIDES.filter((g) => g.pack === "core");
-  const iceland = GUIDES.filter((g) => g.pack === "iceland");
+  // Trip packs only surface when their destination is selected in Settings
+  const iceland = destinationId === "iceland-2026" ? GUIDES.filter((g) => g.pack === "iceland") : [];
 
   const section = (label: string, guides: typeof GUIDES) => (
     <>
@@ -64,7 +67,7 @@ export function GuidesScreen() {
         </div>
       </header>
       {section("Core lighting challenges", core)}
-      {section("Iceland pack", iceland)}
+      {iceland.length > 0 && section("Iceland pack", iceland)}
     </div>
   );
 }

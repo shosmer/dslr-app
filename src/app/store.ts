@@ -29,14 +29,30 @@ export interface AnalysisHistoryEntry {
   summary: string; // "EV 14.2 · overcast"
 }
 
+export type DestinationId = "iceland-2026" | "none";
+
 interface AppState {
+  // Gear config (Settings → Camera & lenses)
+  bodyId: string;
+  /** which lenses are "in the bag" — drives the Analyze picker & recommendations */
+  activeLensIds: string[];
+  // Trip config (Settings → Trip)
+  destinationId: DestinationId;
+  // Eclipse config (Settings → Eclipse)
+  eclipseEnabled: boolean;
+  eclipseSpotId: string;
+  // Session/usage state
   mountedLensId: string;
   intent: IntentId;
-  eclipseSpotId: string;
   checklist: Record<string, boolean>;
   lastHowToId: string | null;
   presets: Preset[];
   history: AnalysisHistoryEntry[];
+  // setters
+  setActiveLenses: (ids: string[]) => void;
+  toggleLens: (id: string) => void;
+  setDestination: (id: DestinationId) => void;
+  setEclipseEnabled: (on: boolean) => void;
   setMountedLens: (id: string) => void;
   setIntent: (i: IntentId) => void;
   setEclipseSpot: (id: string) => void;
@@ -49,16 +65,39 @@ interface AppState {
   importState: (data: Pick<AppState, "presets" | "checklist">) => void;
 }
 
+const ALL_LENS_IDS = ["nikkor-35-18g", "nikkor-55-200-g-ed", "lens-mid-tbd"];
+
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
+      bodyId: "nikon-d7100",
+      activeLensIds: [...ALL_LENS_IDS],
+      destinationId: "iceland-2026",
+      eclipseEnabled: true,
+      eclipseSpotId: "hellissandur",
       mountedLensId: "nikkor-35-18g",
       intent: "landscape",
-      eclipseSpotId: "hellissandur",
       checklist: {},
       lastHowToId: null,
       presets: [],
       history: [],
+      setActiveLenses: (ids) => set({ activeLensIds: ids }),
+      toggleLens: (id) =>
+        set((s) => {
+          const has = s.activeLensIds.includes(id);
+          // never allow zero lenses
+          if (has && s.activeLensIds.length === 1) return s;
+          const activeLensIds = has
+            ? s.activeLensIds.filter((l) => l !== id)
+            : [...s.activeLensIds, id];
+          // keep the mounted lens valid
+          const mountedLensId = activeLensIds.includes(s.mountedLensId)
+            ? s.mountedLensId
+            : activeLensIds[0];
+          return { activeLensIds, mountedLensId };
+        }),
+      setDestination: (destinationId) => set({ destinationId }),
+      setEclipseEnabled: (eclipseEnabled) => set({ eclipseEnabled }),
       setMountedLens: (id) => set({ mountedLensId: id }),
       setIntent: (intent) => set({ intent }),
       setEclipseSpot: (id) => set({ eclipseSpotId: id }),

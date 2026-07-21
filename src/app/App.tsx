@@ -8,7 +8,13 @@ import { GuidesScreen } from "@/features/guides/GuidesScreen";
 import { GuideDetailScreen } from "@/features/guides/GuideDetailScreen";
 import { EclipseScreen } from "@/features/eclipse/EclipseScreen";
 import { PracticeScreen } from "@/features/eclipse/PracticeScreen";
-import { PresetsScreen } from "@/features/presets/PresetsScreen";
+import { SettingsScreen } from "@/features/settings/SettingsScreen";
+import { useAppStore } from "./store";
+
+function EclipseGate({ children }: { children: React.ReactNode }) {
+  const enabled = useAppStore((s) => s.eclipseEnabled);
+  return enabled ? <>{children}</> : <Navigate to="/" replace />;
+}
 
 export function App() {
   return (
@@ -21,9 +27,23 @@ export function App() {
           <Route path="analyze" element={<AnalyzeScreen />} />
           <Route path="guides" element={<GuidesScreen />} />
           <Route path="guides/:id" element={<GuideDetailScreen />} />
-          <Route path="eclipse" element={<EclipseScreen />} />
-          <Route path="eclipse/practice" element={<PracticeScreen />} />
-          <Route path="presets" element={<PresetsScreen />} />
+          <Route
+            path="eclipse"
+            element={
+              <EclipseGate>
+                <EclipseScreen />
+              </EclipseGate>
+            }
+          />
+          <Route
+            path="eclipse/practice"
+            element={
+              <EclipseGate>
+                <PracticeScreen />
+              </EclipseGate>
+            }
+          />
+          <Route path="settings" element={<SettingsScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
