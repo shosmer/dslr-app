@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 /**
  * TabBar — bottom navigation, 5 tabs, translucent blurred bar.
@@ -19,8 +19,23 @@ export interface TabBarProps {
 }
 
 export function TabBar({ items, activeId, onChange }: TabBarProps) {
+  const navRef = useRef<HTMLElement>(null);
+
+  // Stop a swipe-down on the bar from rubber-banding the page. iOS treats a
+  // touch-drag on a fixed, non-scrolling element as a document-level pan;
+  // a non-passive touchmove preventDefault blocks that bounce. Taps don't
+  // fire touchmove, so the tab buttons still work normally.
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const block = (e: TouchEvent) => e.preventDefault();
+    nav.addEventListener("touchmove", block, { passive: false });
+    return () => nav.removeEventListener("touchmove", block);
+  }, []);
+
   return (
     <nav
+      ref={navRef}
       style={{
         // With status-bar-style=default, iOS insets the webview ABOVE the home
         // indicator, so the reserved strip is already outside our canvas — no
@@ -35,6 +50,7 @@ export function TabBar({ items, activeId, onChange }: TabBarProps) {
         backdropFilter: "var(--blur-scrim)",
         WebkitBackdropFilter: "var(--blur-scrim)",
         borderTop: "1px solid var(--border)",
+        touchAction: "none",
       }}
     >
       {items.map((it) => {
