@@ -75,10 +75,24 @@ export function viewportDebugLine(): string {
   const sab = Math.round(parseFloat(cs.bottom) || 0);
   probe.remove();
 
+  // Resolve the CSS viewport units — if lvh > svh, the OS models part of the
+  // screen as collapsible chrome rather than a hard fence.
+  const unitProbe = document.createElement("div");
+  unitProbe.style.cssText = "position:fixed;visibility:hidden;top:0;height:100svh";
+  document.body.appendChild(unitProbe);
+  const svh = Math.round(unitProbe.getBoundingClientRect().height);
+  unitProbe.style.height = "100lvh";
+  const lvh = Math.round(unitProbe.getBoundingClientRect().height);
+  unitProbe.style.height = "100dvh";
+  const dvh = Math.round(unitProbe.getBoundingClientRect().height);
+  unitProbe.remove();
+
   return [
     `vv${vv ? Math.round(vv.height) : "?"}`,
     `win${window.innerHeight}`,
-    `doc${Math.round(document.documentElement.clientHeight)}`,
+    `svh${svh}`,
+    `lvh${lvh}`,
+    `dvh${dvh}`,
     `scr${window.screen.height}`,
     `sat${sat}`,
     `sab${sab}`,

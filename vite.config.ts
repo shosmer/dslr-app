@@ -47,8 +47,13 @@ export default defineConfig({
         display: "fullscreen",
         display_override: ["fullscreen", "standalone"],
         orientation: "portrait",
-        background_color: "#1a1917",
-        theme_color: "#1a1917",
+        // Painted by iOS on the launch screen AND inside the strip it reserves
+        // below the app canvas in standalone mode — matched to the tab bar's
+        // rendered tone (oklch(0.16 0.007 60 / 0.85) over --bg-app) so the
+        // reserved strip reads as part of the bar, ESPN-style. Not an in-app
+        // design change: no pixel the app itself draws uses this value.
+        background_color: "#0f0c09",
+        theme_color: "#0f0c09",
         icons: [
           { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
