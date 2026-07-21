@@ -29,10 +29,10 @@ export function TabShell() {
   const daysToEclipse = Math.ceil((ECLIPSE_C2.getTime() - now) / 86_400_000);
   const badge = daysToEclipse > 0 && daysToEclipse <= 30 ? String(daysToEclipse) : undefined;
 
-  // DEBUG: bright shell/nav borders to make the canvas boundary visible on
-  // device — decides whether the gap is inside the canvas (my bug) or in the
-  // OS-reserved strip below it. Remove once diagnosed.
-  const debug = typeof location !== "undefined" && location.search.includes("edges");
+  // DEBUG (temporary, always on for this build): bright shell/nav borders to
+  // make the canvas boundary visible on device — decides whether the gap is
+  // inside the canvas (my bug) or in the OS-reserved strip below it.
+  const debug = true;
   return (
     <div
       style={{
