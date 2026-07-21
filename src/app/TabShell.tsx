@@ -29,6 +29,10 @@ export function TabShell() {
   const daysToEclipse = Math.ceil((ECLIPSE_C2.getTime() - now) / 86_400_000);
   const badge = daysToEclipse > 0 && daysToEclipse <= 30 ? String(daysToEclipse) : undefined;
 
+  // DEBUG: bright shell/nav borders to make the canvas boundary visible on
+  // device — decides whether the gap is inside the canvas (my bug) or in the
+  // OS-reserved strip below it. Remove once diagnosed.
+  const debug = typeof location !== "undefined" && location.search.includes("edges");
   return (
     <div
       style={{
@@ -38,12 +42,14 @@ export function TabShell() {
         display: "flex",
         flexDirection: "column",
         background: "var(--bg-app)",
+        outline: debug ? "3px solid red" : undefined,
+        outlineOffset: debug ? "-3px" : undefined,
       }}
     >
       <div className="scroll-area" style={{ flex: 1 }} key={activeTabId(location.pathname)}>
         <Outlet />
       </div>
-      <div style={{ flex: "0 0 auto" }}>
+      <div style={{ flex: "0 0 auto", outline: debug ? "3px solid cyan" : undefined, outlineOffset: debug ? "-3px" : undefined }}>
         <TabBar
           activeId={activeTabId(location.pathname)}
           onChange={(id) => {

@@ -1,26 +1,31 @@
 /** One-line viewport diagnostics for the Home footer — lets a screenshot tell
- *  us exactly what the device reports (safe-area insets, viewport units,
- *  display mode). Temporary; strip before the trip. */
+ *  us exactly what the device reports. Temporary; strip before the trip. */
 export function viewportDebugLine(): string {
   if (typeof window === "undefined") return "";
-  const vv = window.visualViewport;
   const standalone =
     window.matchMedia?.("(display-mode: standalone)").matches ||
     ("standalone" in navigator && (navigator as { standalone?: boolean }).standalone === true);
 
-  const probe = document.createElement("div");
-  probe.style.cssText =
-    "position:fixed;visibility:hidden;top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px)";
-  document.body.appendChild(probe);
-  const cs = getComputedStyle(probe);
-  const sat = Math.round(parseFloat(cs.top) || 0);
-  const sab = Math.round(parseFloat(cs.bottom) || 0);
-  probe.remove();
+  // Bulletproof inset probe: a fixed 1px-wide div whose HEIGHT is the inset,
+  // measured via getBoundingClientRect (more reliable than reading top/bottom
+  // computed offsets on an auto-sized element).
+  const measure = (prop: string): number => {
+    const el = document.createElement("div");
+    el.style.cssText = `position:fixed;top:0;left:0;width:1px;visibility:hidden;height:env(${prop},0px)`;
+    document.body.appendChild(el);
+    const h = Math.round(el.getBoundingClientRect().height);
+    el.remove();
+    return h;
+  };
+  const sat = measure("safe-area-inset-top");
+  const sab = measure("safe-area-inset-bottom");
 
   return [
-    `vv${vv ? Math.round(vv.height) : "?"}`,
     `win${window.innerHeight}`,
     `scr${window.screen.height}`,
+    `avail${(window.screen as Screen & { availHeight?: number }).availHeight ?? "?"}`,
+    `sy${window.screenY}`,
+    `oh${window.outerHeight}`,
     `sat${sat}`,
     `sab${sab}`,
     standalone ? "standalone" : "browser",
