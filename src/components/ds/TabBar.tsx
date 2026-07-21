@@ -22,13 +22,15 @@ export function TabBar({ items, activeId, onChange }: TabBarProps) {
   return (
     <nav
       style={{
-        // Native pattern: one bar-height row + the home-indicator inset below
-        // it (standalone reports SAB≈34; the bar background flows into that
-        // zone and labels sit above it, exactly like a UIKit tab bar).
+        // With status-bar-style=default, iOS insets the webview ABOVE the home
+        // indicator, so the reserved strip is already outside our canvas — no
+        // bottom padding needed. The bar sits flush at the webview bottom, as
+        // low as it can go. (Padding here would just be dead space above the
+        // labels — the "white space" that pushed the bar up.)
         display: "flex",
         height: "var(--tabbar-h)",
         boxSizing: "content-box",
-        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        paddingBottom: 0,
         background: "oklch(0.16 0.007 60 / 0.85)",
         backdropFilter: "var(--blur-scrim)",
         WebkitBackdropFilter: "var(--blur-scrim)",
