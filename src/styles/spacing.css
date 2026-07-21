@@ -15,5 +15,5 @@
   --touch-lg:  56px;   /* primary field actions */
 
   --screen-pad: 20px;  /* default screen gutter */
-  --tabbar-h:  64px;   /* bottom tab bar height */
+  --tabbar-h:  50px;   /* bottom tab bar row — matches native iOS (~49pt) */
 }
