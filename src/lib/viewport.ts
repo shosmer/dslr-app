@@ -37,7 +37,15 @@ export function applyViewportFixups(): void {
     const sat = parseFloat(getComputedStyle(probe).top) || 0;
     probe.remove();
 
-    const deadBottom = window.screen.height - sat - window.innerHeight;
+    const standalone =
+      window.matchMedia?.("(display-mode: standalone)").matches ||
+      ("standalone" in navigator && (navigator as { standalone?: boolean }).standalone === true);
+
+    // sat > 0 means the canvas is pinned to the physical top (under the
+    // status bar), so ALL height missing from innerHeight is missing at the
+    // bottom — do NOT subtract sat (that was the 7/20 formula bug that kept
+    // the 28px pad stacked on top of the OS fence).
+    const deadBottom = standalone && sat > 0 ? window.screen.height - window.innerHeight : 0;
     document.documentElement.style.setProperty(
       "--tabbar-inset",
       deadBottom > 8 ? "0px" : "min(env(safe-area-inset-bottom, 0px), 28px)",
