@@ -30,9 +30,10 @@ export function TabBar({ items, activeId, onChange }: TabBarProps) {
         // --tabbar-inset is set at runtime (lib/viewport.ts): 0 when the OS
         // already ends the canvas above the home indicator, env-based otherwise
         paddingBottom: "var(--tabbar-inset, min(env(safe-area-inset-bottom, 0px), 28px))",
-        background: "oklch(0.16 0.007 60 / 0.85)",
-        backdropFilter: "var(--blur-scrim)",
-        WebkitBackdropFilter: "var(--blur-scrim)",
+        // Solid app-background bar: matches the manifest background_color, so
+        // on devices where iOS ends the canvas above the screen edge the
+        // OS-painted band below reads as part of the bar (the native pattern).
+        background: "var(--bg-app)",
         borderTop: "1px solid var(--border)",
       }}
     >
