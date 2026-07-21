@@ -9,7 +9,11 @@
     <meta name="theme-color" content="#1a1917" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- default (not black-translucent): black-translucent is the documented
+         cause of iOS standalone PWAs not extending under the home indicator and
+         reporting env(safe-area-inset-bottom)=0. "default" lets iOS inset the
+         home indicator normally (SAB≈34) so the nav bar pads into it. -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Ljósmynd" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <title>Ljósmynd — D7100 Field Companion</title>
