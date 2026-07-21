@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Download, Eclipse, Rotate3d, ScanLine, Settings } from "lucide-react";
-import { Badge, Button, Card, ChecklistItem, Countdown, IconButton } from "@/components/ds";
+import { Badge, Button, Card, ChecklistItem, IconButton } from "@/components/ds";
+import { LiveCountdown } from "@/components/LiveCountdown";
 import { useAppStore } from "@/app/store";
-import { formatCountdown, localISODate, useNow } from "@/lib/time";
+import { localISODate, useNow } from "@/lib/time";
 import { ECLIPSE_C2 } from "@/features/eclipse/timeline";
 import { ECLIPSE_CHECKLIST } from "@/features/eclipse/checklist";
 import { tripDayFor } from "./trip";
@@ -12,7 +13,8 @@ import { viewportDebugLine } from "@/lib/viewport";
 
 export function HomeScreen() {
   const navigate = useNavigate();
-  const now = useNow(1000);
+  // Minute tick is enough for the trip-day card; the countdown ticks itself
+  const now = useNow(60_000);
   const checklist = useAppStore((s) => s.checklist);
   const toggleChecklist = useAppStore((s) => s.toggleChecklist);
   const lastHowToId = useAppStore((s) => s.lastHowToId);
@@ -53,12 +55,7 @@ export function HomeScreen() {
             Total solar eclipse
           </Badge>
         </div>
-        <Countdown
-          label="Totality · Snæfellsnes · Aug 12, 17:45:46"
-          value={formatCountdown(ECLIPSE_C2.getTime() - now)}
-          tone="amber"
-          size="md"
-        />
+        <LiveCountdown label="Totality · Snæfellsnes · Aug 12, 17:45:46" target={ECLIPSE_C2} tone="amber" size="md" />
         <div style={{ marginTop: 16 }}>
           <Button variant="primary" fullWidth iconLeft={<Eclipse size={18} />} onClick={() => navigate("/eclipse")}>
             Open Eclipse Mode
