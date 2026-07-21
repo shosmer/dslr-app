@@ -41,7 +41,11 @@ export default defineConfig({
         description:
           "Offline-first photography companion for the Nikon D7100 — lighting analyzer, field guides, and Eclipse Mode for Aug 12, 2026.",
         start_url: "/",
-        display: "standalone",
+        // fullscreen: iOS standalone reserves a ~62pt strip at the bottom of
+        // the canvas (measured on-device 7/20); fullscreen requests the whole
+        // screen. display_override falls back gracefully where unsupported.
+        display: "fullscreen",
+        display_override: ["fullscreen", "standalone"],
         orientation: "portrait",
         background_color: "#1a1917",
         theme_color: "#1a1917",

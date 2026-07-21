@@ -27,7 +27,9 @@ export function TabBar({ items, activeId, onChange }: TabBarProps) {
         display: "flex",
         height: "var(--tabbar-h)",
         boxSizing: "content-box",
-        paddingBottom: "min(env(safe-area-inset-bottom, 0px), 28px)",
+        // --tabbar-inset is set at runtime (lib/viewport.ts): 0 when the OS
+        // already ends the canvas above the home indicator, env-based otherwise
+        paddingBottom: "var(--tabbar-inset, min(env(safe-area-inset-bottom, 0px), 28px))",
         background: "oklch(0.16 0.007 60 / 0.85)",
         backdropFilter: "var(--blur-scrim)",
         WebkitBackdropFilter: "var(--blur-scrim)",

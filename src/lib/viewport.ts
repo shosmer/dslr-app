@@ -25,6 +25,29 @@ export function useVisualViewportHeight(): number | null {
   return h;
 }
 
+/** If the OS ends the app's canvas above the physical bottom of the screen
+ *  (iOS standalone reserves ~62pt: screen − sat − innerHeight > 0), the canvas
+ *  edge already clears the home indicator — an additional safe-area spacer on
+ *  the tab bar just doubles the gap. Zero it out in that case. */
+export function applyViewportFixups(): void {
+  const apply = () => {
+    const probe = document.createElement("div");
+    probe.style.cssText = "position:fixed;visibility:hidden;top:env(safe-area-inset-top,0px)";
+    document.body.appendChild(probe);
+    const sat = parseFloat(getComputedStyle(probe).top) || 0;
+    probe.remove();
+
+    const deadBottom = window.screen.height - sat - window.innerHeight;
+    document.documentElement.style.setProperty(
+      "--tabbar-inset",
+      deadBottom > 8 ? "0px" : "min(env(safe-area-inset-bottom, 0px), 28px)",
+    );
+  };
+  apply();
+  window.visualViewport?.addEventListener("resize", apply);
+  window.addEventListener("orientationchange", apply);
+}
+
 /** One-line viewport diagnostics for the Home footer — lets a screenshot tell
  *  us exactly what the device thinks is happening. */
 export function viewportDebugLine(): string {
