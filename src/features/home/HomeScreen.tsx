@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Download, Eclipse, Rotate3d, ScanLine, Settings } from "lucide-react";
 import { Badge, Button, Card, ChecklistItem, Countdown, IconButton } from "@/components/ds";
@@ -8,6 +8,7 @@ import { ECLIPSE_C2 } from "@/features/eclipse/timeline";
 import { ECLIPSE_CHECKLIST } from "@/features/eclipse/checklist";
 import { tripDayFor } from "./trip";
 import { downloadEverything } from "@/lib/tripmode";
+import { viewportDebugLine } from "@/lib/viewport";
 
 export function HomeScreen() {
   const navigate = useNavigate();
@@ -16,6 +17,11 @@ export function HomeScreen() {
   const toggleChecklist = useAppStore((s) => s.toggleChecklist);
   const lastHowToId = useAppStore((s) => s.lastHowToId);
   const [tripMode, setTripMode] = useState<string | null>(null);
+
+  const [debugLine, setDebugLine] = useState("");
+  useEffect(() => {
+    setDebugLine(viewportDebugLine());
+  }, []);
 
   const today = tripDayFor(localISODate(new Date(now)));
   const doneCount = ECLIPSE_CHECKLIST.filter((c) => checklist[c.id]).length;
@@ -140,6 +146,8 @@ export function HomeScreen() {
 
       <div className="eyebrow" style={{ textAlign: "center" }}>
         build {__BUILD_ID__}
+        <br />
+        {debugLine}
       </div>
     </div>
   );

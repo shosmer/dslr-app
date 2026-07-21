@@ -3,6 +3,7 @@ import { BookOpen, Camera, Eclipse, House, ScanLine } from "lucide-react";
 import { TabBar } from "@/components/ds";
 import { ECLIPSE_C2 } from "@/features/eclipse/timeline";
 import { useNow } from "@/lib/time";
+import { useVisualViewportHeight } from "@/lib/viewport";
 
 const TABS = [
   { id: "home", path: "/", label: "Home", icon: <House size={24} /> },
@@ -29,8 +30,20 @@ export function TabShell() {
   const daysToEclipse = Math.ceil((ECLIPSE_C2.getTime() - now) / 86_400_000);
   const badge = daysToEclipse > 0 && daysToEclipse <= 30 ? String(daysToEclipse) : undefined;
 
+  const vvh = useVisualViewportHeight();
   return (
-    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", background: "var(--bg-app)" }}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: vvh != null ? `${vvh}px` : "100dvh",
+        display: "flex",
+        flexDirection: "column",
+        background: "var(--bg-app)",
+      }}
+    >
       <div className="scroll-area" style={{ flex: 1 }} key={activeTabId(location.pathname)}>
         <Outlet />
       </div>
