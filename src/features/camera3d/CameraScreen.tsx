@@ -1,20 +1,34 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ChevronRight, Search } from "lucide-react";
 import { Badge, Button } from "@/components/ds";
 import { BottomSheet } from "@/components/BottomSheet";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { HOWTOS } from "@/features/guides/content";
-import { SplatViewer } from "./SplatViewer";
 import { HOTSPOTS, type Hotspot } from "./hotspots";
+
+// Code-split the whole three.js/R3F stack so it can't block or crash the app —
+// a WebGL failure is caught by the ErrorBoundary and falls back to the list.
+const SplatViewer = lazy(() => import("./SplatViewer").then((m) => ({ default: m.SplatViewer })));
 
 const SPLAT_SRC = "/models/placeholder.splat";
 
+function hasWebGL2(): boolean {
+  try {
+    return typeof window !== "undefined" && !!window.WebGL2RenderingContext && !!document.createElement("canvas").getContext("webgl2");
+  } catch {
+    return false;
+  }
+}
+
 /** Camera tab — interactive 3D D7100 (F1). The splat is a placeholder until
- *  Shanny's real scan lands; the hotspot content + interaction are final. */
+ *  Shanny's real scan lands. If WebGL/3D fails on the device, it degrades to a
+ *  tappable list of the same controls (content is render-agnostic). */
 export function CameraScreen() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Hotspot | null>(null);
+  const webgl = hasWebGL2();
 
   const q = query.trim().toLowerCase();
   const results = q
@@ -26,6 +40,46 @@ export function CameraScreen() {
       )
     : HOWTOS;
 
+  const controlList = (
+    <div>
+      <div
+        className="stripe"
+        style={{ height: 120, alignItems: "center", justifyContent: "center", marginBottom: 12 }}
+      >
+        [ tap a control below ]
+      </div>
+      <span className="eyebrow">Controls · {HOTSPOTS.length}</span>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+        {HOTSPOTS.map((h) => (
+          <button
+            key={h.id}
+            type="button"
+            onClick={() => setSelected(h)}
+            className="press"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              background: "var(--surface-card)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-md)",
+              cursor: "pointer",
+              textAlign: "left",
+              minHeight: "var(--touch-min)",
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            <span style={{ color: "var(--paper)", fontSize: 15, fontWeight: 500 }}>{h.label}</span>
+            <span style={{ color: "var(--text-tertiary)", flex: "0 0 auto" }}>
+              <ChevronRight size={18} />
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="screen">
       <header className="screen-header">
@@ -34,9 +88,26 @@ export function CameraScreen() {
         </div>
       </header>
 
-      <SplatViewer src={SPLAT_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+      {webgl ? (
+        <ErrorBoundary fallback={controlList}>
+          <Suspense
+            fallback={
+              <div
+                className="stripe"
+                style={{ height: 320, alignItems: "center", justifyContent: "center" }}
+              >
+                [ loading 3D viewer… ]
+              </div>
+            }
+          >
+            <SplatViewer src={SPLAT_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+          </Suspense>
+        </ErrorBoundary>
+      ) : (
+        controlList
+      )}
       <p style={{ margin: "-6px 4px 0", fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.4 }}>
-        Placeholder model — your D7100 scan drops in here. Tap the amber markers to explore controls.
+        Placeholder model — your D7100 scan drops in here. Tap a marker to explore controls.
       </p>
 
       {/* Hotspot detail card */}
