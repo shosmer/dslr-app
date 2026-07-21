@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Download, Eclipse, Rotate3d, ScanLine, Settings } from "lucide-react";
-import { Badge, Button, Card, ChecklistItem, IconButton } from "@/components/ds";
+import { Download, Eclipse, Rotate3d, ScanLine, Settings } from "lucide-react";
+import { Badge, Button, Card, IconButton } from "@/components/ds";
 import { LiveCountdown } from "@/components/LiveCountdown";
 import { useAppStore } from "@/app/store";
 import { localISODate, useNow } from "@/lib/time";
 import { ECLIPSE_C2 } from "@/features/eclipse/timeline";
-import { ECLIPSE_CHECKLIST } from "@/features/eclipse/checklist";
 import { tripDayFor } from "./trip";
 import { downloadEverything } from "@/lib/tripmode";
 import { viewportDebugLine } from "@/lib/viewport";
@@ -15,8 +14,6 @@ export function HomeScreen() {
   const navigate = useNavigate();
   // Minute tick is enough for the trip-day card; the countdown ticks itself
   const now = useNow(60_000);
-  const checklist = useAppStore((s) => s.checklist);
-  const toggleChecklist = useAppStore((s) => s.toggleChecklist);
   const lastHowToId = useAppStore((s) => s.lastHowToId);
   const [tripMode, setTripMode] = useState<string | null>(null);
 
@@ -26,11 +23,6 @@ export function HomeScreen() {
   }, []);
 
   const today = tripDayFor(localISODate(new Date(now)));
-  const doneCount = ECLIPSE_CHECKLIST.filter((c) => checklist[c.id]).length;
-  const nextItems = [
-    ...ECLIPSE_CHECKLIST.filter((c) => !checklist[c.id]).slice(0, 2),
-    ...ECLIPSE_CHECKLIST.filter((c) => checklist[c.id]).slice(0, 1),
-  ].slice(0, 2);
 
   const onTripMode = async () => {
     setTripMode("Downloading…");
@@ -114,28 +106,6 @@ export function HomeScreen() {
           </div>
         </Card>
       </div>
-
-      <Card tone="sunken" padding="var(--space-4)" interactive onClick={() => navigate("/eclipse")}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-          <span className="eyebrow">
-            Eclipse prep · {doneCount} of {ECLIPSE_CHECKLIST.length}
-          </span>
-          <span style={{ color: "var(--text-tertiary)" }}>
-            <ChevronRight size={18} />
-          </span>
-        </div>
-        {nextItems.map((c) => (
-          <div key={c.id} onClick={(e) => e.stopPropagation()}>
-            <ChecklistItem
-              label={c.label}
-              detail={c.detail}
-              urgent={c.urgent}
-              checked={!!checklist[c.id]}
-              onToggle={() => toggleChecklist(c.id)}
-            />
-          </div>
-        ))}
-      </Card>
 
       <Button variant="secondary" fullWidth iconLeft={<Download size={18} />} onClick={onTripMode}>
         {tripMode ?? "Trip mode — download everything"}
