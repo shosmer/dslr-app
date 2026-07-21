@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Search } from "lucide-react";
+import { ArrowRight, ChevronRight, Search } from "lucide-react";
+import { Badge, Button } from "@/components/ds";
+import { BottomSheet } from "@/components/BottomSheet";
 import { HOWTOS } from "@/features/guides/content";
+import { SplatViewer } from "./SplatViewer";
+import { HOTSPOTS, type Hotspot } from "./hotspots";
 
-/** Camera tab — How-To library now; the R3F 3D viewer replaces the striped
- *  stage once the D7100 model passes the sourcing gate (PRD §6, docs/TODO.md).
- *  Content is keyed by control id, so the 3D layer drops in without rework. */
+const SPLAT_SRC = "/models/placeholder.splat";
+
+/** Camera tab — interactive 3D D7100 (F1). The splat is a placeholder until
+ *  Shanny's real scan lands; the hotspot content + interaction are final. */
 export function CameraScreen() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<Hotspot | null>(null);
 
   const q = query.trim().toLowerCase();
   const results = q
@@ -28,9 +34,48 @@ export function CameraScreen() {
         </div>
       </header>
 
-      <div className="stripe" style={{ height: 280, alignItems: "center", justifyContent: "center" }}>
-        [ interactive 3D D7100 — model sourcing gate, PRD §6 ]
-      </div>
+      <SplatViewer src={SPLAT_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+      <p style={{ margin: "-6px 4px 0", fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.4 }}>
+        Placeholder model — your D7100 scan drops in here. Tap the amber markers to explore controls.
+      </p>
+
+      {/* Hotspot detail card */}
+      <BottomSheet open={!!selected} onClose={() => setSelected(null)} title={selected?.label}>
+        {selected && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <p style={{ margin: 0, fontSize: 15, lineHeight: 1.55, color: "var(--paper)" }}>{selected.what}</p>
+            {selected.when && (
+              <div>
+                <span className="eyebrow" style={{ display: "block", marginBottom: 4 }}>
+                  When you'd use it
+                </span>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.5, color: "var(--text-secondary)" }}>
+                  {selected.when}
+                </p>
+              </div>
+            )}
+            {selected.howtoId && (
+              <Button
+                variant="secondary"
+                fullWidth
+                iconRight={<ArrowRight size={18} />}
+                onClick={() => {
+                  const id = selected.howtoId;
+                  setSelected(null);
+                  navigate(`/camera/howto/${id}`);
+                }}
+              >
+                Show me how
+              </Button>
+            )}
+            {selected.placeholder && (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Badge tone="warn">Marker position placeholder</Badge>
+              </div>
+            )}
+          </div>
+        )}
+      </BottomSheet>
 
       <div
         style={{

@@ -61,10 +61,12 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Offline-first P0 rule: precache the entire app shell, content, data, fonts.
-        globPatterns: ["**/*.{js,css,html,woff2,json,svg,png}"],
+        // Offline-first P0 rule: precache the entire app shell, content, data,
+        // fonts, and the 3D camera splat.
+        globPatterns: ["**/*.{js,css,html,woff2,json,svg,png,splat,spz}"],
         navigateFallback: "/index.html",
-        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        // the D7100 splat is several MB — allow it into the precache
+        maximumFileSizeToCacheInBytes: 16 * 1024 * 1024,
       },
     }),
   ],
