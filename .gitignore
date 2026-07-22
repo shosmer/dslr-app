@@ -5,3 +5,7 @@ dev-dist
 .vercel
 .env*
 shots
+
+# Large 3D source files (converted to public/models/*.splat)
+*.ply
+*.spz

@@ -56,7 +56,7 @@ export function SplatViewer({
         position: "relative",
       }}
     >
-      <Canvas camera={{ position: [0, 0.2, 4], fov: 40 }} dpr={[1, 2]}>
+      <Canvas camera={{ position: [0, 0, 2.8], fov: 40 }} dpr={[1, 2]}>
         <Suspense fallback={null}>
           {/* Splat coordinate frames are Y-down from most capture tools → flip */}
           <group rotation={[Math.PI, 0, 0]}>

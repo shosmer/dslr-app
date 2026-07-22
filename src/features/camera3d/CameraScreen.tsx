@@ -11,7 +11,7 @@ import { HOTSPOTS, type Hotspot } from "./hotspots";
 // a WebGL failure is caught by the ErrorBoundary and falls back to the list.
 const SplatViewer = lazy(() => import("./SplatViewer").then((m) => ({ default: m.SplatViewer })));
 
-const SPLAT_SRC = "/models/placeholder.splat";
+const SPLAT_SRC = "/models/d7100.splat";
 
 function hasWebGL2(): boolean {
   try {
@@ -107,7 +107,7 @@ export function CameraScreen() {
         controlList
       )}
       <p style={{ margin: "-6px 4px 0", fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.4 }}>
-        Placeholder model — your D7100 scan drops in here. Tap a marker to explore controls.
+        Your D7100 scan. Marker positions still being tuned to the real controls — tap any to explore.
       </p>
 
       {/* Hotspot detail card */}
