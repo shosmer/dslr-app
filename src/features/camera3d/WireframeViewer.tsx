@@ -15,7 +15,7 @@ export function WireframeViewer({
   src,
   hotspots,
   onSelect,
-  thresholdDeg = 32,
+  thresholdDeg = 22,
 }: {
   src: string;
   hotspots: Hotspot[];
@@ -86,8 +86,10 @@ export function WireframeViewer({
 
         const edgePositions: number[] = [];
         const fillMeshes: THREE.Mesh[] = [];
+        // Distinct dark warm-charcoal fill (lighter than the near-black bg) so
+        // the body reads as a solid form, not just floating edges.
         const fillMat = new THREE.MeshBasicMaterial({
-          color: new THREE.Color("#141210"),
+          color: new THREE.Color("#2c2823"),
           polygonOffset: true,
           polygonOffsetFactor: 1,
           polygonOffsetUnits: 1,

@@ -1,7 +1,7 @@
 import { Suspense, lazy, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ChevronRight, Search } from "lucide-react";
-import { Badge, Button } from "@/components/ds";
+import { Button } from "@/components/ds";
 import { BottomSheet } from "@/components/BottomSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { HOWTOS } from "@/features/guides/content";
@@ -138,11 +138,6 @@ export function CameraScreen() {
               >
                 Show me how
               </Button>
-            )}
-            {selected.placeholder && (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Badge tone="warn">Marker position placeholder</Badge>
-              </div>
             )}
           </div>
         )}
