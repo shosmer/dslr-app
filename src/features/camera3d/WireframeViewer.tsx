@@ -25,8 +25,8 @@ export function WireframeViewer({
   thresholdDeg?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const fillMeshesRef = useRef<THREE.Mesh[]>([]);
+  const controlMeshesRef = useRef<THREE.Mesh[]>([]);
   const selectedRef = useRef<string | null | undefined>(selectedId);
   selectedRef.current = selectedId;
   const [loaded, setLoaded] = useState(false);
@@ -79,6 +79,18 @@ export function WireframeViewer({
     });
     lineMat.resolution.set(w * renderer.getPixelRatio(), h * renderer.getPixelRatio());
 
+    // Fills: grey body, amber-tinted controls (highlighted), bright amber selected
+    const mkFill = (hex: string) =>
+      new THREE.MeshBasicMaterial({
+        color: new THREE.Color(hex),
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1,
+      });
+    const bodyFill = mkFill("#2c2823");
+    const controlFill = mkFill("#5a4622");
+    const selectedFill = mkFill("#c2923a");
+
     const loader = new GLTFLoader();
     loader.load(
       src,
@@ -88,13 +100,7 @@ export function WireframeViewer({
         root.updateMatrixWorld(true);
 
         const edgePositions: number[] = [];
-        const fillMeshes: THREE.Mesh[] = [];
-        const fillMat = new THREE.MeshBasicMaterial({
-          color: new THREE.Color("#2c2823"),
-          polygonOffset: true,
-          polygonOffsetFactor: 1,
-          polygonOffsetUnits: 1,
-        });
+        const meshes: THREE.Mesh[] = [];
         root.traverse((o) => {
           const m = o as THREE.Mesh;
           if (!m.isMesh || !m.geometry) return;
@@ -103,7 +109,7 @@ export function WireframeViewer({
           const edges = new THREE.EdgesGeometry(g, threshold);
           const arr = edges.attributes.position.array as ArrayLike<number>;
           for (let i = 0; i < arr.length; i++) edgePositions.push(arr[i]);
-          fillMeshes.push(new THREE.Mesh(g, fillMat));
+          meshes.push(new THREE.Mesh(g, bodyFill));
           edges.dispose();
         });
 
@@ -118,14 +124,42 @@ export function WireframeViewer({
         group.position.copy(center).multiplyScalar(-s);
         group.scale.setScalar(s);
 
-        for (const fm of fillMeshes) group.add(fm);
+        for (const fm of meshes) group.add(fm);
         const lineGeo = new LineSegmentsGeometry();
         lineGeo.setPositions(edgePositions);
         const lines = new LineSegments2(lineGeo, lineMat);
         lines.computeLineDistances();
         group.add(lines);
 
-        fillMeshesRef.current = fillMeshes;
+        fillMeshesRef.current = meshes;
+
+        // Classify small meshes as controls: highlight (amber fill) + tappable,
+        // each mapped to its nearest named control for the card.
+        const CONTROL_MAX_D = 0.34;
+        const controlMeshes: THREE.Mesh[] = [];
+        for (const fm of meshes) {
+          fm.geometry.computeBoundingBox();
+          const bb = fm.geometry.boundingBox!;
+          const d = bb.getSize(new THREE.Vector3()).length() * s;
+          if (d > CONTROL_MAX_D) continue;
+          const gc = bb.getCenter(new THREE.Vector3());
+          const lc = group.worldToLocal(fm.localToWorld(gc.clone()));
+          let best: Hotspot | null = null;
+          let bd = Infinity;
+          for (const hs of hotspots) {
+            const dd = Math.hypot(lc.x - hs.position[0], lc.y - hs.position[1], lc.z - hs.position[2]);
+            if (dd < bd) {
+              bd = dd;
+              best = hs;
+            }
+          }
+          if (!best) continue;
+          fm.material = controlFill;
+          fm.userData.hotspot = best;
+          controlMeshes.push(fm);
+        }
+        controlMeshesRef.current = controlMeshes;
+
         setLoaded(true);
       },
       undefined,
@@ -154,54 +188,35 @@ export function WireframeViewer({
       ray.setFromCamera(ndc, camera);
       const hits = ray.intersectObjects(fillMeshesRef.current, false);
       if (!hits.length) return;
-      const l = group.worldToLocal(hits[0].point.clone());
       if (authorMode) {
+        const l = group.worldToLocal(hits[0].point.clone());
         // eslint-disable-next-line no-console
         console.log("HOTSPOT " + JSON.stringify([+l.x.toFixed(3), +l.y.toFixed(3), +l.z.toFixed(3)]));
         return;
       }
-      let best: Hotspot | null = null;
-      let bestD = 0.42; // max tap distance (model radius ~1.1)
-      for (const hs of hotspots) {
-        const d = Math.hypot(l.x - hs.position[0], l.y - hs.position[1], l.z - hs.position[2]);
-        if (d < bestD) {
-          bestD = d;
-          best = hs;
-        }
+      // Select the control mesh that was tapped (front-most hit with a control)
+      const hit = hits.find((hh) => (hh.object as THREE.Mesh).userData.hotspot);
+      const hs = hit && ((hit.object as THREE.Mesh).userData.hotspot as Hotspot | undefined);
+      if (params.has("tapdbg")) {
+        // eslint-disable-next-line no-console
+        console.log(`TAP hits=${hits.length} control=${hs ? hs.id : "none"}`);
       }
-      if (best) onSelect(best);
+      if (hs) onSelect(hs);
     };
     renderer.domElement.addEventListener("pointerdown", onDown);
     renderer.domElement.addEventListener("pointerup", onUp);
 
-    const world = new THREE.Vector3();
-    const camDir = new THREE.Vector3();
     const animate = () => {
       raf = requestAnimationFrame(animate);
       controls.update();
-      renderer.render(scene, camera);
-      camera.getWorldDirection(camDir);
-      const width = renderer.domElement.clientWidth;
-      const height = renderer.domElement.clientHeight;
-      for (let i = 0; i < hotspots.length; i++) {
-        const el = dotRefs.current[i];
-        if (!el) continue;
-        world
-          .set(hotspots[i].position[0], hotspots[i].position[1], hotspots[i].position[2])
-          .applyMatrix4(group.matrixWorld);
-        const behind = world.clone().sub(camera.position).dot(camDir) <= 0;
-        world.project(camera);
-        const x = (world.x * 0.5 + 0.5) * width;
-        const y = (-world.y * 0.5 + 0.5) * height;
-        const isSel = hotspots[i].id === selectedRef.current;
-        el.style.opacity = behind || world.z > 1 ? "0" : isSel ? "1" : "0.5";
-        const size = isSel ? 22 : 9;
-        el.style.width = `${size}px`;
-        el.style.height = `${size}px`;
-        el.style.boxShadow = isSel ? "var(--glow-amber)" : "none";
-        el.style.border = isSel ? "2px solid var(--text-on-accent)" : "none";
-        el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+      // Highlight the selected control mesh(es) in bright amber
+      const sel = selectedRef.current;
+      for (const fm of controlMeshesRef.current) {
+        const isSel = (fm.userData.hotspot as Hotspot | undefined)?.id === sel;
+        const want = isSel ? selectedFill : controlFill;
+        if (fm.material !== want) fm.material = want;
       }
+      renderer.render(scene, camera);
     };
     animate();
 
@@ -241,26 +256,6 @@ export function WireframeViewer({
         background: "var(--surface-sunken)",
       }}
     >
-      {/* Non-interactive glow dots marking the tappable controls */}
-      {hotspots.map((hs, i) => (
-        <div
-          key={hs.id}
-          ref={(el) => (dotRefs.current[i] = el)}
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            opacity: 0,
-            width: 9,
-            height: 9,
-            borderRadius: "50%",
-            background: "var(--accent)",
-            pointerEvents: "none",
-            zIndex: 2,
-            transition: "width var(--dur-base) var(--ease-out), height var(--dur-base) var(--ease-out)",
-          }}
-        />
-      ))}
       {!loaded && (
         <div
           className="eyebrow"
