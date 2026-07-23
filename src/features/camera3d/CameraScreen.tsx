@@ -7,11 +7,14 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { HOWTOS } from "@/features/guides/content";
 import { HOTSPOTS, type Hotspot } from "./hotspots";
 
-// Code-split the whole three.js/R3F stack so it can't block or crash the app —
+// Code-split the whole three.js stack so it can't block or crash the app —
 // a WebGL failure is caught by the ErrorBoundary and falls back to the list.
 const SplatViewer = lazy(() => import("./SplatViewer").then((m) => ({ default: m.SplatViewer })));
+const WireframeViewer = lazy(() => import("./WireframeViewer").then((m) => ({ default: m.WireframeViewer })));
 
 const SPLAT_SRC = "/models/d7100.splat";
+// ?wf=<glb> renders the wireframe viewer with that model (dev/eval)
+const WF_SRC = new URLSearchParams(window.location.search).get("wf");
 
 function hasWebGL2(): boolean {
   try {
@@ -100,7 +103,11 @@ export function CameraScreen() {
               </div>
             }
           >
-            <SplatViewer src={SPLAT_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+            {WF_SRC ? (
+              <WireframeViewer src={WF_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+            ) : (
+              <SplatViewer src={SPLAT_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+            )}
           </Suspense>
         </ErrorBoundary>
       ) : (
