@@ -29,9 +29,21 @@ export function SplatViewer({
     const w = container.clientWidth || 320;
     const h = container.clientHeight || 320;
 
+    // DEV: fixed camera angle via URL (?az=&el=&dist=&nohot) for authoring
+    const params = new URLSearchParams(window.location.search);
+    const azP = params.get("az");
+    const fixedCam = azP !== null;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, w / h, 0.01, 100);
-    camera.position.set(0, 0, 3);
+    // Default: top plate seen from behind (shooter's view) — az 180, el ~45
+    camera.position.set(0, 1.85, -1.85);
+    if (fixedCam) {
+      const a = (+azP * Math.PI) / 180;
+      const e = ((+(params.get("el") ?? "10")) * Math.PI) / 180;
+      const d = +(params.get("dist") ?? "3");
+      camera.position.set(d * Math.cos(e) * Math.sin(a), d * Math.sin(e), d * Math.cos(e) * Math.cos(a));
+    }
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -45,10 +57,10 @@ export function SplatViewer({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
     controls.enableDamping = true;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.8;
+    controls.autoRotate = false; // hold the top-plate hero view; user orbits
     controls.minDistance = 1.2;
     controls.maxDistance = 6;
+    controls.target.set(0, 0, 0);
 
     const mesh = new SplatMesh({
       url: src,
@@ -121,7 +133,7 @@ export function SplatViewer({
         background: "var(--surface-sunken)",
       }}
     >
-      {hotspots.map((hs, i) => (
+      {!new URLSearchParams(window.location.search).has("nohot") && hotspots.map((hs, i) => (
         <button
           key={hs.id}
           ref={(el) => (markerRefs.current[i] = el)}

@@ -107,7 +107,7 @@ export function CameraScreen() {
         controlList
       )}
       <p style={{ margin: "-6px 4px 0", fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.4 }}>
-        Your D7100 scan. Marker positions still being tuned to the real controls — tap any to explore.
+        Your D7100 — drag to orbit, tap a control to learn it.
       </p>
 
       {/* Hotspot detail card */}
