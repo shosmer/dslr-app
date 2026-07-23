@@ -37,10 +37,13 @@ export function WireframeViewer({
     const params = new URLSearchParams(window.location.search);
     const azP = params.get("az");
     const fixedCam = azP !== null;
+    const threshold = params.get("thr") ? +params.get("thr")! : thresholdDeg;
+    const authorMode = params.has("author");
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, w / h, 0.01, 100);
-    camera.position.set(0, 1.6, 2.4);
+    // Default: top plate from behind (shooter's view)
+    camera.position.set(-0.48, 1.67, -1.8);
     if (fixedCam) {
       const a = (+azP * Math.PI) / 180;
       const e = ((+(params.get("el") ?? "20")) * Math.PI) / 180;
@@ -57,10 +60,10 @@ export function WireframeViewer({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
     controls.enableDamping = true;
-    controls.autoRotate = !fixedCam;
-    controls.autoRotateSpeed = 0.6;
+    controls.autoRotate = false; // hold the top-plate hero view
     controls.minDistance = 1.2;
     controls.maxDistance = 6;
+    controls.target.set(0, 0, 0);
 
     const group = new THREE.Group();
     scene.add(group);
@@ -94,7 +97,7 @@ export function WireframeViewer({
           if (!m.isMesh || !m.geometry) return;
           const g = m.geometry.clone();
           g.applyMatrix4(m.matrixWorld);
-          const edges = new THREE.EdgesGeometry(g, thresholdDeg);
+          const edges = new THREE.EdgesGeometry(g, threshold);
           const arr = edges.attributes.position.array as ArrayLike<number>;
           for (let i = 0; i < arr.length; i++) edgePositions.push(arr[i]);
           fillMeshes.push(new THREE.Mesh(g, fillMat));
@@ -119,6 +122,23 @@ export function WireframeViewer({
         const lines = new LineSegments2(lineGeo, lineMat);
         lines.computeLineDistances();
         group.add(lines);
+
+        if (authorMode) {
+          const ray = new THREE.Raycaster();
+          const ndc = new THREE.Vector2();
+          renderer.domElement.addEventListener("click", (ev) => {
+            const rect = renderer.domElement.getBoundingClientRect();
+            ndc.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+            ndc.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+            ray.setFromCamera(ndc, camera);
+            const hits = ray.intersectObjects(fillMeshes, false);
+            if (hits.length) {
+              const l = group.worldToLocal(hits[0].point.clone());
+              // eslint-disable-next-line no-console
+              console.log("HOTSPOT " + JSON.stringify([+l.x.toFixed(3), +l.y.toFixed(3), +l.z.toFixed(3)]));
+            }
+          });
+        }
 
         setLoaded(true);
       },
