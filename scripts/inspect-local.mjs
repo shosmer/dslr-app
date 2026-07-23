@@ -6,7 +6,7 @@ p.on("console", m => logs.push(`[${m.type()}] ${m.text()}`.slice(0,200)));
 p.on("pageerror", e => logs.push(`[pageerror] ${String(e).slice(0,300)}`));
 const net = [];
 p.on("response", r => { const u=r.url(); if(u.includes(".splat")||u.includes("SplatViewer")||u.match(/\.(js)$/)&&u.includes("Splat")) net.push(`${r.status()} ${u.split("/").pop()}`); });
-await p.goto("http://localhost:4182/camera", { waitUntil: "networkidle", timeout: 30000 });
+await p.goto("http://localhost:4183/camera", { waitUntil: "networkidle", timeout: 30000 });
 await p.waitForTimeout(6000);
 const hasCanvas = await p.locator("canvas").count();
 const hasFallbackList = await p.getByText("tap a control below").count();
