@@ -100,7 +100,12 @@ export function CameraScreen() {
               </div>
             }
           >
-            <WireframeViewer src={MODEL_SRC} hotspots={HOTSPOTS} onSelect={setSelected} />
+            <WireframeViewer
+              src={MODEL_SRC}
+              hotspots={HOTSPOTS}
+              onSelect={setSelected}
+              selectedId={selected?.id ?? null}
+            />
           </Suspense>
         </ErrorBoundary>
       ) : (

@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const b = await chromium.launch({ args: ["--use-gl=angle","--use-angle=swiftshader"] });
+const p = await b.newPage({ viewport: { width: 500, height: 560 } });
+await p.goto("http://localhost:4204/camera?az=195&el=42&dist=2.5", { waitUntil: "networkidle" });
+await p.waitForTimeout(3500);
+const c = await p.locator("canvas").boundingBox();
+await p.mouse.click(c.x + c.width*0.45, c.y + c.height*0.38);
+await p.waitForTimeout(500);
+const card = await p.getByText(/Hold it and spin|Half-press|selects P, S, A|Rear dial|Left column|collar beneath/).count();
+await p.screenshot({ path: "shots/tap-final.png", clip:{x:0,y:60,width:500,height:420} });
+console.log("card opened:", card>0);
+await b.close();

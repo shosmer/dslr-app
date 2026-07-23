@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const b = await chromium.launch({ args: ["--use-gl=angle","--use-angle=swiftshader"] });
+const p = await b.newPage({ viewport: { width: 500, height: 560 } });
+await p.goto("http://localhost:4206/camera?az=195&el=42&dist=2.5", { waitUntil: "networkidle" });
+await p.waitForTimeout(3500);
+const c = await p.locator("canvas").boundingBox();
+await p.mouse.click(c.x + c.width*0.55, c.y + c.height*0.45);
+await p.waitForTimeout(500);
+const sheetTitle = await p.locator('[role="dialog"]').first().innerText().catch(()=>"");
+await p.screenshot({ path: "shots/tap-works.png", clip:{x:0,y:60,width:500,height:500} });
+console.log("sheet:", sheetTitle.split("\n")[0] || "(none)");
+await b.close();

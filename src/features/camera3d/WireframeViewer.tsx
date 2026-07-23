@@ -8,22 +8,27 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import type { Hotspot } from "./hotspots";
 
 /** WireframeViewer — crisp feature-line ("blueprint") render of a modeled D7100
- *  GLB. EdgesGeometry(thresholdAngle) keeps only meaningful edges; fat lines
- *  (LineSegments2) give a controllable amber stroke; a dark fill occludes back
- *  edges for depth. Same interface as SplatViewer so it's swappable. */
+ *  GLB. The camera SURFACE is tappable: a tap raycasts the geometry and selects
+ *  the nearest control (no floating markers to hit). Subtle glow dots mark the
+ *  interactive controls; the selected one lights up. */
 export function WireframeViewer({
   src,
   hotspots,
   onSelect,
+  selectedId,
   thresholdDeg = 22,
 }: {
   src: string;
   hotspots: Hotspot[];
   onSelect: (h: Hotspot) => void;
+  selectedId?: string | null;
   thresholdDeg?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const markerRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const fillMeshesRef = useRef<THREE.Mesh[]>([]);
+  const selectedRef = useRef<string | null | undefined>(selectedId);
+  selectedRef.current = selectedId;
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -38,12 +43,10 @@ export function WireframeViewer({
     const azP = params.get("az");
     const fixedCam = azP !== null;
     const threshold = params.get("thr") ? +params.get("thr")! : thresholdDeg;
-    const authorMode = params.has("author");
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, w / h, 0.01, 100);
-    // Default: top plate from behind (shooter's view)
-    camera.position.set(-0.48, 1.67, -1.8);
+    camera.position.set(-0.48, 1.67, -1.8); // top plate from behind
     if (fixedCam) {
       const a = (+azP * Math.PI) / 180;
       const e = ((+(params.get("el") ?? "20")) * Math.PI) / 180;
@@ -60,7 +63,7 @@ export function WireframeViewer({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
     controls.enableDamping = true;
-    controls.autoRotate = false; // hold the top-plate hero view
+    controls.autoRotate = false;
     controls.minDistance = 1.2;
     controls.maxDistance = 6;
     controls.target.set(0, 0, 0);
@@ -70,7 +73,7 @@ export function WireframeViewer({
 
     const lineMat = new LineMaterial({
       color: new THREE.Color("#eeb64b").getHex(),
-      linewidth: 1.6, // px (worldUnits false)
+      linewidth: 1.6,
       worldUnits: false,
       alphaToCoverage: true,
     });
@@ -86,8 +89,6 @@ export function WireframeViewer({
 
         const edgePositions: number[] = [];
         const fillMeshes: THREE.Mesh[] = [];
-        // Distinct dark warm-charcoal fill (lighter than the near-black bg) so
-        // the body reads as a solid form, not just floating edges.
         const fillMat = new THREE.MeshBasicMaterial({
           color: new THREE.Color("#2c2823"),
           polygonOffset: true,
@@ -106,7 +107,6 @@ export function WireframeViewer({
           edges.dispose();
         });
 
-        // Center + normalize to unit-ish radius
         const box = new THREE.Box3();
         const tmp = new THREE.Vector3();
         for (let i = 0; i < edgePositions.length; i += 3) {
@@ -125,31 +125,54 @@ export function WireframeViewer({
         lines.computeLineDistances();
         group.add(lines);
 
-        if (authorMode) {
-          const ray = new THREE.Raycaster();
-          const ndc = new THREE.Vector2();
-          renderer.domElement.addEventListener("click", (ev) => {
-            const rect = renderer.domElement.getBoundingClientRect();
-            ndc.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
-            ndc.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
-            ray.setFromCamera(ndc, camera);
-            const hits = ray.intersectObjects(fillMeshes, false);
-            if (hits.length) {
-              const l = group.worldToLocal(hits[0].point.clone());
-              // eslint-disable-next-line no-console
-              console.log("HOTSPOT " + JSON.stringify([+l.x.toFixed(3), +l.y.toFixed(3), +l.z.toFixed(3)]));
-            }
-          });
-        }
-
+        fillMeshesRef.current = fillMeshes;
         setLoaded(true);
       },
       undefined,
       () => {
-        // load error → surface to the ErrorBoundary by throwing on next tick
         if (!disposed) setLoaded(true);
       },
     );
+
+    // Tappable surface: a tap (not a drag) raycasts the body and selects the
+    // nearest control. The whole button/dial area is the target.
+    const ray = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    const authorMode = params.has("author");
+    let downX = 0, downY = 0, downT = 0;
+    const onDown = (e: PointerEvent) => {
+      downX = e.clientX;
+      downY = e.clientY;
+      downT = Date.now();
+    };
+    const onUp = (e: PointerEvent) => {
+      if (Date.now() - downT > 500) return;
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 8) return; // drag, not tap
+      const rect = renderer.domElement.getBoundingClientRect();
+      ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      ray.setFromCamera(ndc, camera);
+      const hits = ray.intersectObjects(fillMeshesRef.current, false);
+      if (!hits.length) return;
+      const l = group.worldToLocal(hits[0].point.clone());
+      if (authorMode) {
+        // eslint-disable-next-line no-console
+        console.log("HOTSPOT " + JSON.stringify([+l.x.toFixed(3), +l.y.toFixed(3), +l.z.toFixed(3)]));
+        return;
+      }
+      let best: Hotspot | null = null;
+      let bestD = 0.42; // max tap distance (model radius ~1.1)
+      for (const hs of hotspots) {
+        const d = Math.hypot(l.x - hs.position[0], l.y - hs.position[1], l.z - hs.position[2]);
+        if (d < bestD) {
+          bestD = d;
+          best = hs;
+        }
+      }
+      if (best) onSelect(best);
+    };
+    renderer.domElement.addEventListener("pointerdown", onDown);
+    renderer.domElement.addEventListener("pointerup", onUp);
 
     const world = new THREE.Vector3();
     const camDir = new THREE.Vector3();
@@ -161,7 +184,7 @@ export function WireframeViewer({
       const width = renderer.domElement.clientWidth;
       const height = renderer.domElement.clientHeight;
       for (let i = 0; i < hotspots.length; i++) {
-        const el = markerRefs.current[i];
+        const el = dotRefs.current[i];
         if (!el) continue;
         world
           .set(hotspots[i].position[0], hotspots[i].position[1], hotspots[i].position[2])
@@ -170,13 +193,13 @@ export function WireframeViewer({
         world.project(camera);
         const x = (world.x * 0.5 + 0.5) * width;
         const y = (-world.y * 0.5 + 0.5) * height;
-        if (behind || world.z > 1) {
-          el.style.opacity = "0";
-          el.style.pointerEvents = "none";
-        } else {
-          el.style.opacity = "1";
-          el.style.pointerEvents = "auto";
-        }
+        const isSel = hotspots[i].id === selectedRef.current;
+        el.style.opacity = behind || world.z > 1 ? "0" : isSel ? "1" : "0.5";
+        const size = isSel ? 22 : 9;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.boxShadow = isSel ? "var(--glow-amber)" : "none";
+        el.style.border = isSel ? "2px solid var(--text-on-accent)" : "none";
         el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
       }
     };
@@ -198,10 +221,13 @@ export function WireframeViewer({
       cancelAnimationFrame(raf);
       ro.disconnect();
       controls.dispose();
+      renderer.domElement.removeEventListener("pointerdown", onDown);
+      renderer.domElement.removeEventListener("pointerup", onUp);
       renderer.dispose();
       renderer.domElement.remove();
+      fillMeshesRef.current = [];
     };
-  }, [src, hotspots, thresholdDeg]);
+  }, [src, hotspots, thresholdDeg, onSelect]);
 
   return (
     <div
@@ -215,37 +241,26 @@ export function WireframeViewer({
         background: "var(--surface-sunken)",
       }}
     >
-      {!new URLSearchParams(window.location.search).has("nohot") &&
-        hotspots.map((hs, i) => (
-          <button
-            key={hs.id}
-            ref={(el) => (markerRefs.current[i] = el)}
-            type="button"
-            aria-label={hs.label}
-            onClick={() => onSelect(hs)}
-            className="press-icon"
-            style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              opacity: 0,
-              width: 26,
-              height: 26,
-              borderRadius: "var(--radius-pill)",
-              border: "2px solid var(--text-on-accent)",
-              background: "var(--accent)",
-              boxShadow: "var(--glow-amber)",
-              cursor: "pointer",
-              zIndex: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              WebkitTapHighlightColor: "transparent",
-            }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--text-on-accent)" }} />
-          </button>
-        ))}
+      {/* Non-interactive glow dots marking the tappable controls */}
+      {hotspots.map((hs, i) => (
+        <div
+          key={hs.id}
+          ref={(el) => (dotRefs.current[i] = el)}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            opacity: 0,
+            width: 9,
+            height: 9,
+            borderRadius: "50%",
+            background: "var(--accent)",
+            pointerEvents: "none",
+            zIndex: 2,
+            transition: "width var(--dur-base) var(--ease-out), height var(--dur-base) var(--ease-out)",
+          }}
+        />
+      ))}
       {!loaded && (
         <div
           className="eyebrow"
@@ -266,7 +281,7 @@ export function WireframeViewer({
           pointerEvents: "none",
         }}
       >
-        drag to orbit · tap a marker
+        drag to orbit · tap a control
       </span>
     </div>
   );
